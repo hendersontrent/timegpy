@@ -11,6 +11,8 @@
       <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
 
   
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
       <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=2389946f"></script>
       <script src="_static/doctools.js?v=888ff710"></script>
       <script src="_static/sphinx_highlight.js?v=4825356b"></script>
@@ -73,9 +75,9 @@
            <div itemprop="articleBody">
              
   <section id="fitness-calculation-approach">
-<h1>Fitness calculation approach<a class="headerlink" href="#fitness-calculation-approach" title="Permalink to this heading">¶</a></h1>
+<h1>Fitness calculation approach<a class="headerlink" href="#fitness-calculation-approach" title="Permalink to this heading"></a></h1>
 <section id="theoretical-basis">
-<h2>Theoretical basis<a class="headerlink" href="#theoretical-basis" title="Permalink to this heading">¶</a></h2>
+<h2>Theoretical basis<a class="headerlink" href="#theoretical-basis" title="Permalink to this heading"></a></h2>
 <p>There are countless ways to calculate and optimise fitness for a classification context—such as</p>
 <p><code class="docutils literal notranslate"><span class="pre">timegpy</span></code> instead takes a more statistical approach to fitness by implementing one-way analysis of variance (ANOVA) for the calculation of time-average feature fitness. A one-way ANOVA compares whether two or more samples’ means are different, using the <em>F</em>-distribution as the null hypothesis. The <em>F</em>-statistic of a one-way ANOVA with two groups is equivalent to the square of the <em>t</em>-statistic from a Student’s <em>t</em>-test, however, ANOVA is generalisable to <em>N</em> number of groups—which is critical, as many time-series classification problems are multi-class problems. We use a one-way test because we seek to quantify group differences with only one time-average feature at a time (i.e., there is a single explanatory variable).</p>
 <p>From an interpretation standpoint, ANOVA is simple and intuitive. The <em>F</em>-statistic is a ratio between the mean square of the between-groups variance (i.e., how different the group means are from one another) and the within-groups variance (how dispersed each group’s distribution is about its mean)—both of which are derived from sums of squares:</p>

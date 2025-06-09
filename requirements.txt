@@ -4,4 +4,4 @@ matplotlib
 scikit-learn
 scipy
 tqdm
-sphinx_rtd_theme
+sphinx-rtd-theme

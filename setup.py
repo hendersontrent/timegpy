@@ -10,12 +10,12 @@ install_requires = [
     'scikit-learn',
     'scipy',
     'tqdm',
-    'sphinx_rtd_theme'
+    'sphinx-rtd-theme'
 ]
 
 docs_extras = [
     'sphinx >= 3.0.0',  # Force RTD to use >= 3.0.0
-    'sphinx_rtd_theme >= 1.1.1'
+    'sphinx-rtd-theme >= 1.1.1'
 ]
 
 setup(

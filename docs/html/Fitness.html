@@ -19,6 +19,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Alternative software libraries" href="Alternatives.html" />
     <link rel="prev" title="Quickstart" href="Quickstart.html" /> 
 </head>
 
@@ -48,6 +49,7 @@
 <li class="toctree-l2"><a class="reference internal" href="#theoretical-basis">Theoretical basis</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="Alternatives.html">Alternative software libraries</a></li>
 </ul>
 
         </div>
@@ -91,7 +93,7 @@
 <p>Prior to deciding on eta squared as the fitness metric, the <em>p</em>-value associated with the <em>F</em>-statistic (i.e., the probability of obtaining a result at least as extreme as the one we observed if the null hypothesis that there is no difference in group means is true) was first considered. This placed the objective function in a minimisation context instead. However, initial testing resulted in large numbers of identically performing features due to issues with floating point precision—the larger program size values in the adjusted fitness function dominated the tiny <em>p</em>-values that were incredibly close to <img class="math" src="_images/math/31fdf41b39df23c95e52c5aef07f59d9adf82f3c.png" alt="0"/>. Testing confirmed that eta squared was not impacted by this issue.</p>
 <p>The ANOVA approach to fitness in <code class="docutils literal notranslate"><span class="pre">timegpy</span></code> is summarised graphically below:</p>
 <a class="reference internal image-reference" href="_images/anova.png"><img alt="Graphical representation of ANOVA in a time-average feature context." src="_images/anova.png" style="width: 600px;" /></a>
-<p><strong>A</strong> represents a case where each class is well separated by the numerical variable, as the ratio of between-groups variance and within-groups variance (i.e., the <em>F</em>-statistic) is high. <strong>B</strong> represents a case where classes are not well distinguished by the numerical variable, as the ratio of between-group variance and within-groups variance is low. <strong>C</strong> represents the expected differences between i.i.d noise and an AR(1) process with an autoregressive coefficient of <img class="math" src="_images/math/4e440de340f1f8a4fb3a717132fd585421562691.png" alt="\phi = 0.8`"/> on the time-average feature <img class="math" src="_images/math/b69b8f138e1bf09c0a7ad2c936575e6e396ef7db.png" alt="\langle x_{t}x_{t+1} \rangle"/>. The noise time series should exhibit a distribution around zero since there is no lag one autocorrelation in its data generating process. The AR(1) process, however, would be distributed around the coefficient value, since the feature is essentially measuring the average strength of the relationship between one-time-point lagged values.</p>
+<p><strong>A</strong> represents a case where each class is well separated by the numerical variable, as the ratio of between-groups variance and within-groups variance (i.e., the <em>F</em>-statistic) is high. <strong>B</strong> represents a case where classes are not well distinguished by the numerical variable, as the ratio of between-group variance and within-groups variance is low. <strong>C</strong> represents the expected differences between <img class="math" src="_images/math/6ba9aa3cb103d1876d2ad0d5a05b140418967dc1.png" alt="\mathrm{iid}"/> noise and an AR(1) process with an autoregressive coefficient of <img class="math" src="_images/math/b68a47d3eeae073bfc12b8461327be30dcd5cd7d.png" alt="\phi = 0.8"/> on the time-average feature <img class="math" src="_images/math/b69b8f138e1bf09c0a7ad2c936575e6e396ef7db.png" alt="\langle x_{t}x_{t+1} \rangle"/>. The noise time series should exhibit a distribution around zero since there is no lag one autocorrelation in its data generating process. The AR(1) process, however, would be distributed around the coefficient value, since the feature is essentially measuring the average strength of the relationship between one-time-point lagged values.</p>
 </section>
 </section>
 
@@ -100,6 +102,7 @@
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="Quickstart.html" class="btn btn-neutral float-left" title="Quickstart" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Alternatives.html" class="btn btn-neutral float-right" title="Alternative software libraries" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

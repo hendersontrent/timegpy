@@ -57,6 +57,7 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="Fitness.html">Fitness calculation approach</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Alternatives.html">Alternative software libraries</a></li>
 </ul>
 
         </div>
@@ -185,14 +186,20 @@
 </section>
 <section id="additional-graphical-tools">
 <h3>Additional graphical tools<a class="headerlink" href="#additional-graphical-tools" title="Permalink to this heading"></a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">timegpy</span></code> also contains functionality for interpreting a visualising genetic programming outputs. For example, users may seek to visualise class separation according to the best time-average feature (or any other). The convenience function <code class="docutils literal notranslate"><span class="pre">plot_feature</span></code> has been included for this purpose. It only requires a time-average feature expression as a string (using the conventions of <code class="docutils literal notranslate"><span class="pre">timegpy</span></code>), the input data <code class="docutils literal notranslate"><span class="pre">X</span></code>, and the class label vector <code class="docutils literal notranslate"><span class="pre">y</span></code>. Here is an example using the best found expression from the above example:</p>
+<p><code class="docutils literal notranslate"><span class="pre">timegpy</span></code> also contains functionality for interpreting a visualising genetic programming outputs. For example, users may seek to visualise class separation according to the best time-average feature (or any other). The convenience function <code class="docutils literal notranslate"><span class="pre">feature_hist</span></code> has been included for this purpose. It only requires a time-average feature expression as a string (using the conventions of <code class="docutils literal notranslate"><span class="pre">timegpy</span></code>), the input data <code class="docutils literal notranslate"><span class="pre">X</span></code>, and the class label vector <code class="docutils literal notranslate"><span class="pre">y</span></code>. Here is an example using the best found expression from the above example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">expression</span> <span class="o">=</span> <span class="n">df_best</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;expression&#39;</span><span class="p">]</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">plot</span> <span class="o">=</span> <span class="n">plot_feature</span><span class="p">(</span><span class="n">expression</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="n">plot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="_images/ar1-plot.png"><img alt="Sums of squares equation for ANOVA." src="_images/ar1-plot.png" style="width: 600px;" /></a>
+<a class="reference internal image-reference" href="_images/ar1-plot.png"><img alt="Noise vs AR(1) histogram on the best individual feature." src="_images/ar1-plot.png" style="width: 600px;" /></a>
 <p>Intuitively, we see the Gaussian noise time series distributed around a feature value of <img class="math" src="_images/math/31fdf41b39df23c95e52c5aef07f59d9adf82f3c.png" alt="0"/> and the AR(1) data (Class 1) distributed around <img class="math" src="_images/math/16bbac04c3b1943a78be435030ac09caeacbb029.png" alt="0.8"/>—which we know to be the autoregressive coefficient we used to generate the data. This, combined with the fact that <code class="docutils literal notranslate"><span class="pre">&quot;X_t+0</span> <span class="pre">*</span> <span class="pre">X_t+1&quot;</span></code> was found to be the best time-average feature for classifying the time series, solidifies that the algorithm is working as expected.</p>
+<p>There are also plotting options for the Pareto front (<code class="docutils literal notranslate"><span class="pre">pareto</span></code>) as well as average fitness by generation (<code class="docutils literal notranslate"><span class="pre">fitness_gen</span></code>). The latter looks like this:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plot_fitness_over_time</span><span class="p">(</span><span class="n">df_all</span><span class="p">,</span> <span class="n">use_parsimony</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/fitness-plot.png"><img alt="Average fitness by generation." src="_images/fitness-plot.png" style="width: 600px;" /></a>
 </section>
 <section id="evaluating-individual-time-average-feature-expressions">
 <h3>Evaluating individual time-average feature expressions<a class="headerlink" href="#evaluating-individual-time-average-feature-expressions" title="Permalink to this heading"></a></h3>

@@ -28,7 +28,7 @@ def generate_ar1_vs_noise(N, T, phi, seed=None):
 
     return X, y
 
-X, y = generate_ar1_vs_noise(N=1000, T=1000, phi=0.8, seed=123)
+X, y = generate_ar1_vs_noise(N=100, T=100, phi=0.8, seed=123)
 
 #----------------- Test core function -----------------
 
@@ -41,3 +41,9 @@ X, y, df_all, df_best = tsgp(
     tournament_size=20,
     n_generation_improve=1
 )
+
+#----------------- Test plotting function -----------------
+
+expression = "mean(X_t+0 * X_t+1)"
+plot = plot_feature(expression, X, y)
+plot.show()

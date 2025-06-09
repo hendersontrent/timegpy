@@ -2,7 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from evaluate_expression import evaluate_expression
 
-def plot_by_class(expr, X, y, bins=10):
+def plot_feature(expr, X, y, bins=10):
     """
     Plots a histogram of the feature (from best_info_df) by class.
     

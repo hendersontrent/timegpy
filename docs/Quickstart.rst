@@ -124,7 +124,7 @@ Additional graphical tools
    >>> plot = plot_feature(expression, X, y)
    >>> plot.show()
 
-.. image:: img/ar1-plot.png
+.. image:: images/ar1-plot.png
   :width: 400
   :alt: Sums of squares equation for ANOVA.
 

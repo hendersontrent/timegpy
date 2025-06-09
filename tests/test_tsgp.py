@@ -1,5 +1,5 @@
 import numpy as np
-import timegpy
+from timegpy.gp import tsgp
 
 #----------------- Simulate Gaussian noise and AR(1) data -----------------
 
@@ -32,18 +32,4 @@ X, y = generate_ar1_vs_noise(N=100, T=100, phi=0.8, seed=123)
 
 #----------------- Test core function -----------------
 
-X, y, df_all, df_best = tsgp(
-    X, y,
-    pop_size=1000,
-    n_generations=5,
-    fitness_threshold=1,
-    verbose=True,
-    tournament_size=20,
-    n_generation_improve=1
-)
-
-#----------------- Test plotting function -----------------
-
-expression = "mean(X_t+0 * X_t+1)"
-plot = plot_feature(expression, X, y)
-plot.show()
+X, y, df_all, df_best = tsgp(X, y)

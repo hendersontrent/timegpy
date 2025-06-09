@@ -62,7 +62,7 @@ Structure of time-average feature expressions in timegpy
 
 In ``timegpy``, features are represented as strings to the user, but trees internally. For example, a time-average feature representing lag 1 autocorrelation function (on *z*-scored data) which is mathematically written as :math:`$\langle x_{t}x_{t+1} \rangle$` would be represented in ``timegpy`` as ``"X_t+0 * X_t+1"`` or, more correctly, ``"mean(X_t+0 * X_t+1)"``. More complex features may include exponents, such as ``"X_t+0 + X_t+1 ^ 3"`` and/or numerous other combinations of time lags.
 
-From a statistical perspective, for this tutorial example, we would expect to see the *best* performing feature to be ``"X_t+0 * X_t+1"`` sd this corresponds to the value of the autocorrelation function at lag 1---which we know from the data simulation code above to be the distinguishing temporal difference between the two processes. This creates a nice ground truth test case for the algorithm.
+From a statistical perspective, for this tutorial example, we would expect to see the *best* performing feature to be ``"X_t+0 * X_t+1"`` as this corresponds to the value of the autocorrelation function at lag 1---which we know from the data simulation code above to be the distinguishing temporal difference between the two processes. This creates a nice ground truth test case for the algorithm.
 
 Doing genetic programming in timegpy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -149,3 +149,64 @@ Outside of the core genetic programming algorithm contained in ``tsgp``, ``timeg
 .. code::
    
    >>> feature_values = evaluate_expression("mean((X_t+0 * X_t+1))", X)
+
+Multiclass problems
+^^^^^^^^^^^^^^^^^^^
+
+Since the current fitness metric is an (adjusted) :math:`\eta^{2}` from an ANOVA (which can have multiple groups), there are no additional requirements for multiclass problems. Let's generate a three-class problem of Gaussian noise versus AR(1) process versus AR(2) process and run ``tsgp``:
+
+.. code::
+   
+   >>> def generate_noise_vs_ar1_vs_ar2(N, T, phi1=0.8, phi2=0.5, phi3=0.3, seed=None):
+   >>>  if seed is not None:
+   >>>      np.random.seed(seed)
+
+   >>>  # AR(1) samples
+   >>>  ar1_data = np.zeros((N, T))
+   >>>  for i in range(N):
+   >>>      noise = np.random.normal(0, 1, T)
+   >>>      ar1 = np.zeros(T)
+   >>>      ar1[0] = noise[0]
+   >>>      for t in range(1, T):
+   >>>          ar1[t] = phi1 * ar1[t - 1] + noise[t]
+   >>>      ar1_data[i] = ar1
+
+   >>>  # AR(2) samples
+   >>>  ar2_data = np.zeros((N, T))
+   >>>  for i in range(N):
+   >>>      noise = np.random.normal(0, 1, T)
+   >>>      ar2 = np.zeros(T)
+   >>>      ar2[0] = noise[0]
+   >>>      ar2[1] = noise[1]
+   >>>      for t in range(2, T):
+   >>>          ar2[t] = phi2 * ar2[t - 1] + phi3 * ar2[t - 2] + noise[t]
+   >>>      ar2_data[i] = ar2
+
+   >>>  # Gaussian noise samples
+   >>>  noise_data = np.random.normal(0, 1, (N, T))
+
+   >>>  # Combine and label
+   >>>  X = np.vstack([noise_data, ar1_data, ar2_data])
+   >>>  y = np.array([0] * N + [1] * N + [2] * N)
+
+   >>>  return X, y
+
+   >>> X2, y2 = generate_noise_vs_ar1_vs_ar2(N=100, T=100, phi1=0.8, phi2=0.5, phi3=0.3, seed=123)
+
+   >>> X2, y2, df_all2, df_best2 = tsgp(
+   >>>  X2, y2,
+   >>>  pop_size=1000,
+   >>>  fitness_threshold=0.99
+   >>> )
+
+We can now easily visualise the best performing feature and how each class is distributed on it:
+
+.. code::
+   
+   >>> expression2 = df_best2.iloc[0]['expression']
+   >>> plot2 = feature_hist2(expression2, X2, y2)
+   >>> plot2.show()
+
+.. image:: images/noise-ar1-ar2.png
+  :width: 600
+  :alt: Noise vs AR(1) vs AR(2) histogram on the best individual feature.

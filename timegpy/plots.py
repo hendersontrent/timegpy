@@ -6,7 +6,7 @@ from .evaluate_expression import evaluate_expression
 
 def feature_hist(expr, X, y, bins=10):
     """
-    Plots a histogram of the feature (from best_info_df) by class.
+    Plots a histogram of the feature (from best_info_df) by class, with vertical lines at class means.
     
     Parameters:
     - expr: string representation of the time-average feature expression
@@ -21,12 +21,19 @@ def feature_hist(expr, X, y, bins=10):
 
     # Get class labels
     classes = np.unique(y)
-    colors = plt.cm.get_cmap('Dark2', len(classes))
+    colors = plt.cm.get_cmap('viridis', len(classes))
 
     plt.figure(figsize=(10, 6))
     for idx, cls in enumerate(classes):
         cls_values = feature_values[y == cls]
-        plt.hist(cls_values, bins=bins, alpha=0.6, label=f"Class {cls}", color=colors(idx), edgecolor='black')
+        color = colors(idx)
+
+        # Histogram
+        plt.hist(cls_values, bins=bins, alpha=0.4, label=f"Class {cls}", color=color, edgecolor='black')
+
+        # Vertical line for class mean
+        cls_mean = np.mean(cls_values)
+        plt.axvline(cls_mean, color=color, linestyle='--', linewidth=2, label=f"Mean Class {cls}")
 
     plt.title(expr)
     plt.xlabel("Feature Value")

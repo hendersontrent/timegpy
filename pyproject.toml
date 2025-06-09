@@ -1,0 +1,29 @@
+[project]
+name = "timegpy"
+version = "0.1.0"
+authors = [
+    {name = "Trent Henderson"},
+    {email = "then6675@uni.sydney.edu.au"},
+]
+maintainers = [
+    {name = "Trent Henderson"},
+    {email = "then6675@uni.sydney.edu.au"},
+]
+description = "Find informative time-average features using genetic programming"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.8"
+classifiers=[
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Intended Audience :: Science/Research",
+    "Topic :: Scientific/Engineering :: Mathematics",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+    ]
+
+[project.urls]
+"GitHub Repository (pycatch22)" = "https://github.com/hendersontrent/timegpy"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"

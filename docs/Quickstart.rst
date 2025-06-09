@@ -17,7 +17,7 @@ Usage
 
 Time-average features---quantities of the functional form :math:`$\langle f(x_1, x_2, \dots, x_n)_t \rangle$` such as :math:`$\langle x_{t}x_{t+1} \rangle$`---have shown utility in solving time-series problems across the sciences but have yet to be systematically applied to time-series classification problems. Time-average features are highly interpretable, which means they can be used to develop an intuitive understanding of why two classes might be well distinguished from one another by their temporal dynamics.
 
-This tutorial will walk through basic functionality of the package using a simulated example. We will first generate some data, where we have n = 100 samples from an `autoregressive process of lag 1 <https://en.wikipedia.org/wiki/Autoregressive_model>`_ with an autoregressive coefficient of ``0.8``, and n = 100 samples drawn from simple Gaussian noise (with mean 0 and standard deviation 1), where every time series is T = 100 long:
+This tutorial will walk through basic functionality of the package using a simulated example. We will first generate some data, where we have :math:`n = 100` samples from an `autoregressive process of lag 1 <https://en.wikipedia.org/wiki/Autoregressive_model>`_ with an autoregressive coefficient of :math:`\phi = 0.8`, and :math:`n = 100` samples drawn from simple Gaussian noise (with mean 0 and standard deviation 1), where every time series is :math:`T = 100` long:
 
 .. code::
    
@@ -60,13 +60,7 @@ This tutorial will walk through basic functionality of the package using a simul
 Structure of time-average feature expressions in timegpy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In ``timegpy``, features are represented as strings to the user, but trees internally. For example, a time-average feature representing lag 1 autocorrelation function (on *z*-scored data) which is mathematically written as: 
-
-.. image:: images/ar1-eq.png
-  :width: 50
-  :alt: Time-average feature equation for AR(1).
-
-would be represented in ``timegpy`` as ``"X_t+0 * X_t+1"`` or, more correctly, ``"mean(X_t+0 * X_t+1)"``. More complex features may include exponents, such as ``"X_t+0 + X_t+1 ^ 3"`` and/or numerous other combinations of time lags.
+In ``timegpy``, features are represented as strings to the user, but trees internally. For example, a time-average feature representing lag 1 autocorrelation function (on *z*-scored data) which is mathematically written as :math:`$\langle x_{t}x_{t+1} \rangle$` would be represented in ``timegpy`` as ``"X_t+0 * X_t+1"`` or, more correctly, ``"mean(X_t+0 * X_t+1)"``. More complex features may include exponents, such as ``"X_t+0 + X_t+1 ^ 3"`` and/or numerous other combinations of time lags.
 
 From a statistical perspective, for this tutorial example, we would expect to see the *best* performing feature to be ``"X_t+0 * X_t+1"`` sd this corresponds to the value of the autocorrelation function at lag 1---which we know from the data simulation code above to be the distinguishing temporal difference between the two processes. This creates a nice ground truth test case for the algorithm.
 
@@ -113,11 +107,11 @@ Despite the simplicity of the above call, it is highly likely that users will se
 Important parameter notes
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 
-``fitness_threshold`` must be less than or equal to ``1`` and greater than ``0`` as the current objective function maximises values between ``0`` and ``1``.
+``fitness_threshold`` must be :math:`0 \geq \text{fitness\_threshold} \leq 1` as the current objective function maximises values between :math:`0` and :math:`1`.
 
-The values of ``p_point_mutation``, ``p_subtree_mutation``, ``p_hoist_mutation``, and ``p_crossover`` must sum to less than ``1`` as the remaining probability is allocated to 'no change'.
+The values of ``p_point_mutation``, ``p_subtree_mutation``, ``p_hoist_mutation``, and ``p_crossover`` must sum to :math:`<1` as the remaining probability is allocated to 'no change'.
 
-``parsimony_coefficient``, if used, must be less than ``1`` otherwise it does not represent a complexity penalty.
+``parsimony_coefficient``, if used, must be :math:`<1` otherwise it does not represent a complexity penalty.
 
 Additional graphical tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -134,7 +128,7 @@ Additional graphical tools
   :width: 600
   :alt: Sums of squares equation for ANOVA.
 
-Intuitively, we see the Gaussian noise time series distributed around a feature value of ``0`` and the AR(1) data (Class 1) distributed around ``0.8``---which we know to be the autoregressive coefficient we used to generate the data. This, combined with the fact that ``"X_t+0 * X_t+1"`` was found to be the best time-average feature for classifying the time series, solidifies that the algorithm is working as expected.
+Intuitively, we see the Gaussian noise time series distributed around a feature value of :math:`0` and the AR(1) data (Class 1) distributed around :math:`0.8`---which we know to be the autoregressive coefficient we used to generate the data. This, combined with the fact that ``"X_t+0 * X_t+1"`` was found to be the best time-average feature for classifying the time series, solidifies that the algorithm is working as expected.
 
 Evaluating individual time-average feature expressions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

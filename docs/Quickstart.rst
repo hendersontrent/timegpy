@@ -15,19 +15,7 @@ Usage
 
 ``timegpy`` ("genetic programming for time-average features") is a Python package for finding informative time-average 'features' that can distinguish between classes. A time-series feature is a summary statistic which returns a scalar for each time series which summarises some property, such as the value of the autocorrelation function at lag 1, or the variance of sliding window variances taken across the time series (see `this paper <https://royalsocietypublishing.org/doi/abs/10.1098/rsif.2013.0048>`_, `this paper <https://www.sciencedirect.com/science/article/pii/S2405471217304386>`_, and `this book chapter <https://www.taylorfrancis.com/chapters/edit/10.1201/9781315181080-4/feature-based-time-series-analysis-ben-fulcher>`_ for more). 
 
-Time-average features---quantities of the functional form:
-
-.. image:: images/functional-form.png
-  :width: 100
-  :alt: Time-average feature equation for AR(1).
-
-such as:
-
-.. image:: images/ar1-eq.png
-  :width: 50
-  :alt: Time-average feature equation for AR(1).
-
-have shown utility in solving time-series problems across the sciences but have yet to be systematically applied to time-series classification problems. Time-average features are highly interpretable, which means they can be used to develop an intuitive understanding of why two classes might be well distinguished from one another by their temporal dynamics.
+Time-average features---quantities of the functional form :math:`$\langle f(x_1, x_2, \dots, x_n)_t \rangle$` such as :math:`$\langle x_{t}x_{t+1} \rangle$`---have shown utility in solving time-series problems across the sciences but have yet to be systematically applied to time-series classification problems. Time-average features are highly interpretable, which means they can be used to develop an intuitive understanding of why two classes might be well distinguished from one another by their temporal dynamics.
 
 This tutorial will walk through basic functionality of the package using a simulated example. We will first generate some data, where we have n = 100 samples from an `autoregressive process of lag 1 <https://en.wikipedia.org/wiki/Autoregressive_model>`_ with an autoregressive coefficient of ``0.8``, and n = 100 samples drawn from simple Gaussian noise (with mean 0 and standard deviation 1), where every time series is T = 100 long:
 

@@ -33,6 +33,6 @@ setup(
         "Intended Audience :: Science/Research",
         "Topic :: Scientific/Engineering :: Mathematics",
         "Topic :: Scientific/Engineering :: Information Analysis",
-    ]
+    ],
     install_requires=install_requires
 )

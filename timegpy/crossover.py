@@ -1,6 +1,6 @@
 import random
 from copy import deepcopy
-from classes import Node
+from .classes import Node
 from .replace_node import replace_node
 from .get_all_nodes import get_all_nodes
 

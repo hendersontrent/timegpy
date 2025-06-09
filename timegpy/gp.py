@@ -64,7 +64,7 @@ def tsgp(
         z_score (bool): whether to z-score input data X. Defaults to True
 
     Returns:
-        dataframe: X.
+        Input data X, class label vector y, fitness results for every generation, and best individual time-average feature.
     """
 
     def tournament_selection(pop, fitnesses):

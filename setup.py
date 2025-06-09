@@ -9,8 +9,7 @@ install_requires = [
     'matplotlib',
     'scikit-learn',
     'scipy',
-    'tqdm',
-    'sphinx-rtd-theme'
+    'tqdm'
 ]
 
 docs_extras = [

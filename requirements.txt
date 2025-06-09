@@ -4,4 +4,3 @@ matplotlib
 scikit-learn
 scipy
 tqdm
-sphinx-rtd-theme

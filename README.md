@@ -1,7 +1,6 @@
+# timegpy <img src="img/timegpy.png" align="right" width="120" />
 
-# timegpy
-
-Find Informative Time Average Features Using Genetic Programming
+Find informative time-average features using genetic programming
 
 ## Installation
 

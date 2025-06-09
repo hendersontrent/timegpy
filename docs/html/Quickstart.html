@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Quickstart &mdash; timegpy 0.1.0 documentation</title><link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Fitness calculation approach" href="Fitness.html" />
+    <link rel="prev" title="Welcome to timegpy’s documentation!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+            <a href="index.html" class="icon icon-home"> timegpy
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Quickstart</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#installation">Installation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#usage">Usage</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#structure-of-time-average-feature-expressions-in-timegpy">Structure of time-average feature expressions in timegpy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#doing-genetic-programming-in-timegpy">Doing genetic programming in timegpy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#important-parameter-notes">Important parameter notes</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#additional-graphical-tools">Additional graphical tools</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#evaluating-individual-time-average-feature-expressions">Evaluating individual time-average feature expressions</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="Fitness.html">Fitness calculation approach</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">timegpy</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Quickstart</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/Quickstart.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <div class="section" id="quickstart">
+<h1>Quickstart<a class="headerlink" href="#quickstart" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="installation">
+<h2>Installation<a class="headerlink" href="#installation" title="Permalink to this headline">¶</a></h2>
+<p>You can install <code class="docutils literal notranslate"><span class="pre">timegpy</span></code> using pip:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">git</span><span class="o">+</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">github</span><span class="o">.</span><span class="n">com</span><span class="o">/</span><span class="n">hendersontrent</span><span class="o">/</span><span class="n">timegpy</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="usage">
+<h2>Usage<a class="headerlink" href="#usage" title="Permalink to this headline">¶</a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">timegpy</span></code> (“genetic programming for time-average features”) is a Python package for finding informative time-average ‘features’ that can distinguish between classes. A time-series feature is a summary statistic which returns a scalar for each time series which summarises some property, such as the value of the autocorrelation function at lag 1, or the variance of sliding window variances taken across the time series (see <a class="reference external" href="https://royalsocietypublishing.org/doi/abs/10.1098/rsif.2013.0048">this paper</a>, <a class="reference external" href="https://www.sciencedirect.com/science/article/pii/S2405471217304386">this paper</a>, and <a class="reference external" href="https://www.taylorfrancis.com/chapters/edit/10.1201/9781315181080-4/feature-based-time-series-analysis-ben-fulcher">this book chapter</a> for more).</p>
+<p>Time-average features—quantities of the functional form:</p>
+<a class="reference internal image-reference" href="_images/functional-form.png"><img alt="Time-average feature equation for AR(1)." src="_images/functional-form.png" style="width: 100px;" /></a>
+<p>such as:</p>
+<a class="reference internal image-reference" href="_images/ar1-eq.png"><img alt="Time-average feature equation for AR(1)." src="_images/ar1-eq.png" style="width: 100px;" /></a>
+<p>have shown utility in solving time-series problems across the sciences but have yet to be systematically applied to time-series classification problems. Time-average features are highly interpretable, which means they can be used to develop an intuitive understanding of why two classes might be well distinguished from one another by their temporal dynamics.</p>
+<p>This tutorial will walk through basic functionality of the package using a simulated example. We will first generate some data, where we have n = 100 samples from an <a class="reference external" href="https://en.wikipedia.org/wiki/Autoregressive_model">autoregressive process of lag 1</a> with an autoregressive coefficient of <code class="docutils literal notranslate"><span class="pre">0.8</span></code>, and n = 100 samples drawn from simple Gaussian noise (with mean 0 and standard deviation 1), where every time series is T = 100 long:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">timegpy.gp</span> <span class="kn">import</span> <span class="n">tsgp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span> <span class="nn">timegpy.plots</span> <span class="kn">import</span> <span class="n">plot_feature</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="c1"># Simulate Gaussian noise and AR(1) data</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="k">def</span> <span class="nf">generate_ar1_vs_noise</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">phi</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>     <span class="k">if</span> <span class="n">seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+<span class="gp">&gt;&gt;&gt; </span>         <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span>     <span class="c1"># AR(1) samples</span>
+
+<span class="gp">&gt;&gt;&gt; </span>     <span class="n">ar1_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">T</span><span class="p">))</span>
+<span class="gp">&gt;&gt;&gt; </span>     <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>         <span class="n">noise</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>         <span class="n">ar1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">T</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span>         <span class="n">ar1</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">noise</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span>         <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="n">T</span><span class="p">):</span>
+<span class="gp">&gt;&gt;&gt; </span>             <span class="n">ar1</span><span class="p">[</span><span class="n">t</span><span class="p">]</span> <span class="o">=</span> <span class="n">phi</span> <span class="o">*</span> <span class="n">ar1</span><span class="p">[</span><span class="n">t</span> <span class="o">-</span> <span class="mi">1</span><span class="p">]</span> <span class="o">+</span> <span class="n">noise</span><span class="p">[</span><span class="n">t</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span>         <span class="n">ar1_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">ar1</span>
+
+<span class="gp">&gt;&gt;&gt; </span>     <span class="c1"># Gaussian noise samples</span>
+
+<span class="gp">&gt;&gt;&gt; </span>     <span class="n">noise_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">T</span><span class="p">))</span>
+
+<span class="gp">&gt;&gt;&gt; </span>     <span class="c1"># Combine</span>
+
+<span class="gp">&gt;&gt;&gt; </span>     <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">ar1_data</span><span class="p">,</span> <span class="n">noise_data</span><span class="p">])</span>
+
+<span class="gp">&gt;&gt;&gt; </span>     <span class="c1"># Labels</span>
+<span class="gp">&gt;&gt;&gt; </span>     <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span> <span class="o">+</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span><span class="p">)</span>
+
+<span class="gp">&gt;&gt;&gt; </span>     <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span>
+
+<span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="n">generate_ar1_vs_noise</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">phi</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
+</pre></div>
+</div>
+<div class="section" id="structure-of-time-average-feature-expressions-in-timegpy">
+<h3>Structure of time-average feature expressions in timegpy<a class="headerlink" href="#structure-of-time-average-feature-expressions-in-timegpy" title="Permalink to this headline">¶</a></h3>
+<p>In <code class="docutils literal notranslate"><span class="pre">timegpy</span></code>, features are represented as strings to the user, but trees internally. For example, a time-average feature representing lag 1 autocorrelation function (on <em>z</em>-scored data) which is mathematically written as:</p>
+<a class="reference internal image-reference" href="_images/ar1-eq.png"><img alt="Time-average feature equation for AR(1)." src="_images/ar1-eq.png" style="width: 100px;" /></a>
+<p>would be represented in <code class="docutils literal notranslate"><span class="pre">timegpy</span></code> as <code class="docutils literal notranslate"><span class="pre">&quot;X_t+0</span> <span class="pre">*</span> <span class="pre">X_t+1&quot;</span></code> or, more correctly, <code class="docutils literal notranslate"><span class="pre">&quot;mean(X_t+0</span> <span class="pre">*</span> <span class="pre">X_t+1&quot;)</span></code>. More complex features may include exponents, such as <code class="docutils literal notranslate"><span class="pre">&quot;X_t+0</span> <span class="pre">+</span> <span class="pre">X_t+1</span> <span class="pre">^</span> <span class="pre">3&quot;</span></code> and/or numerous other combinations of time lags.</p>
+<p>From a statistical perspective, for this tutorial example, we would expect to see the <em>best</em> performing feature to be <code class="docutils literal notranslate"><span class="pre">&quot;X_t+0</span> <span class="pre">*</span> <span class="pre">X_t+1&quot;</span></code> sd this corresponds to the value of the autocorrelation function at lag 1—which we know from the data simulation code above to be the distinguishing temporal difference between the two processes. This creates a nice ground truth test case for the algorithm.</p>
+</div>
+<div class="section" id="doing-genetic-programming-in-timegpy">
+<h3>Doing genetic programming in timegpy<a class="headerlink" href="#doing-genetic-programming-in-timegpy" title="Permalink to this headline">¶</a></h3>
+<p>The core function in <code class="docutils literal notranslate"><span class="pre">timegpy</span></code> is <code class="docutils literal notranslate"><span class="pre">tsgp</span></code> (‘time-series genetic programming’). We can exercise high degrees of control over the algorithm’s evolution by adjusting the large number of available arguments. Here is a simple call using all of the default parameters:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">df_all</span><span class="p">,</span> <span class="n">df_best</span> <span class="o">=</span> <span class="n">tsgp</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><code class="docutils literal notranslate"><span class="pre">tsgp</span></code> returns four objects:</p>
+<ol class="arabic simple">
+<li><p>Input matrix <code class="docutils literal notranslate"><span class="pre">X</span></code></p></li>
+<li><p>Class label vector <code class="docutils literal notranslate"><span class="pre">y</span></code></p></li>
+<li><p>Data frame containing all time-average features across all generations and their fitness scores</p></li>
+<li><p>Data frame containing the best individual time-average feature and its fitness score</p></li>
+</ol>
+<p>Despite the simplicity of the above call, it is highly likely that users will seek to adjust the numerous parameters to their task. Here is a breakdown of the available arguments:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">X</span></code> (array): ID by time matrix containing time-series data</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">y</span></code> (array): vector of class labels for each row of <code class="docutils literal notranslate"><span class="pre">X</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">pop_size</span></code> (int): size of each population. Defaults to <code class="docutils literal notranslate"><span class="pre">100</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n_generations</span></code> (int): maximum number of generations. Defaults to <code class="docutils literal notranslate"><span class="pre">5</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">fitness_threshold</span></code> (float): objective function value which if equalled or exceeded, will terminate the algorithm. Defaults to <code class="docutils literal notranslate"><span class="pre">0.95</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">p_point_mutation</span></code> (float): probability of point mutation occurring. Defaults to <code class="docutils literal notranslate"><span class="pre">0.01</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">p_subtree_mutation</span></code> (float): probability of subtree mutation occurring. Defaults to <code class="docutils literal notranslate"><span class="pre">0.01</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">p_hoist_mutation</span></code> (float): probability of hoist mutation occurring. Defaults to <code class="docutils literal notranslate"><span class="pre">0.01</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">p_crossover</span></code> (float): probability of crossover occurring. Defaults to <code class="docutils literal notranslate"><span class="pre">0.9</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">p_exponent</span></code> (float): probability of a time lag being exponentiated. Defaults to <code class="docutils literal notranslate"><span class="pre">0.3</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">tournament_size</span></code> (int): size of each tournament to find a suitable parent. Defaults to <code class="docutils literal notranslate"><span class="pre">20</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">use_parsimony</span></code> (bool): whether to use parsimony-adjusted fitness instead of raw fitness. Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">auto_parsimony</span></code> (bool): whether to calculate generational parsimony coefficients dynamically. Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">parsimony_coefficient</span></code> (float): if <code class="docutils literal notranslate"><span class="pre">auto_parsimony</span> <span class="pre">=</span> <span class="pre">False</span></code>, this static coefficient for parsimony will be applied to all generations. Defaults to <code class="docutils literal notranslate"><span class="pre">0.001</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">verbose</span></code> (bool): whether to print updates of algorithm progress. Defaults to <code class="docutils literal notranslate"><span class="pre">False</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max_depth</span></code> (int): maximum number of time-lag terms allowed in a single feature expression. Defaults to <code class="docutils literal notranslate"><span class="pre">8</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max_lag</span></code> (int): maximum time-lag allowed in a single feature expression. Defaults to <code class="docutils literal notranslate"><span class="pre">8</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">max_exponent</span></code> (int): maximum exponent allowed. Defaults to <code class="docutils literal notranslate"><span class="pre">5</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">seed</span></code> (int): fixes Python’s random seed for reproducibility. Defaults to <code class="docutils literal notranslate"><span class="pre">123</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">n_generation_improve</span></code> (int): number of generations of no fitness improvement before algorithm terminates early. Defaults to <code class="docutils literal notranslate"><span class="pre">1</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">z_score</span></code> (bool): whether to z-score input data X. Defaults to <code class="docutils literal notranslate"><span class="pre">True</span></code></p></li>
+</ul>
+</div>
+<div class="section" id="important-parameter-notes">
+<h3>Important parameter notes<a class="headerlink" href="#important-parameter-notes" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">fitness_threshold</span></code> must be less than or equal to <code class="docutils literal notranslate"><span class="pre">1</span></code> and greater than <code class="docutils literal notranslate"><span class="pre">0</span></code> as the current objective function maximises values between <code class="docutils literal notranslate"><span class="pre">0</span></code> and <code class="docutils literal notranslate"><span class="pre">1</span></code>.</p>
+<p>The values of <code class="docutils literal notranslate"><span class="pre">p_point_mutation</span></code>, <code class="docutils literal notranslate"><span class="pre">p_subtree_mutation</span></code>, <code class="docutils literal notranslate"><span class="pre">p_hoist_mutation</span></code>, and <code class="docutils literal notranslate"><span class="pre">p_crossover</span></code> must sum to less than <code class="docutils literal notranslate"><span class="pre">1</span></code> as the remaining probability is allocated to ‘no change’.</p>
+<p><code class="docutils literal notranslate"><span class="pre">parsimony_coefficient</span></code>, if used, must be less than <code class="docutils literal notranslate"><span class="pre">1</span></code> otherwise it does not represent a complexity penalty.</p>
+</div>
+<div class="section" id="additional-graphical-tools">
+<h3>Additional graphical tools<a class="headerlink" href="#additional-graphical-tools" title="Permalink to this headline">¶</a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">timegpy</span></code> also contains functionality for interpreting a visualising genetic programming outputs. For example, users may seek to visualise class separation according to the best time-average feature (or any other). The convenience function <code class="docutils literal notranslate"><span class="pre">plot_feature</span></code> has been included for this purpose. It only requires a time-average feature expression as a string (using the conventions of <code class="docutils literal notranslate"><span class="pre">timegpy</span></code>), the input data <code class="docutils literal notranslate"><span class="pre">X</span></code>, and the class label vector <code class="docutils literal notranslate"><span class="pre">y</span></code>. Here is an example using the best found expression from the above example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">expression</span> <span class="o">=</span> <span class="n">df_best</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;expression&#39;</span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plot</span> <span class="o">=</span> <span class="n">plot_feature</span><span class="p">(</span><span class="n">expression</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plot</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/ar1-plot.png"><img alt="Sums of squares equation for ANOVA." src="_images/ar1-plot.png" style="width: 600px;" /></a>
+<p>Intuitively, we see the Gaussian noise time series distributed around a feature value of <code class="docutils literal notranslate"><span class="pre">0</span></code> and the AR(1) data (Class 1) distributed around <code class="docutils literal notranslate"><span class="pre">0.8</span></code>—which we know to be the autoregressive coefficient we used to generate the data. This, combined with the fact that <code class="docutils literal notranslate"><span class="pre">&quot;X_t+0</span> <span class="pre">*</span> <span class="pre">X_t+1&quot;</span></code> was found to be the best time-average feature for classifying the time series, solidifies that the algorithm is working as expected.</p>
+</div>
+<div class="section" id="evaluating-individual-time-average-feature-expressions">
+<h3>Evaluating individual time-average feature expressions<a class="headerlink" href="#evaluating-individual-time-average-feature-expressions" title="Permalink to this headline">¶</a></h3>
+<p>Outside of the core genetic programming algorithm contained in <code class="docutils literal notranslate"><span class="pre">tsgp</span></code>, <code class="docutils literal notranslate"><span class="pre">timegpy</span></code> can also calculate time-average feature values for any given string representation of an expression and the input matrix:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">feature_values</span> <span class="o">=</span> <span class="n">evaluate_expression</span><span class="p">(</span><span class="s2">&quot;mean((X_t+0 * X_t+1))&quot;</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Welcome to timegpy’s documentation!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="Fitness.html" class="btn btn-neutral float-right" title="Fitness calculation approach" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, Trent Henderson.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

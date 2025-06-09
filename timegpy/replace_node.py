@@ -1,4 +1,4 @@
-from classes import Node
+from .classes import Node
 
 def replace_node(tree: Node, target: Node, replacement: Node):
     def recurse(n):

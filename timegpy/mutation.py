@@ -1,9 +1,9 @@
 import random
 from copy import deepcopy
-from classes import Node
-from generate_random_tree import generate_random_tree
-from get_all_nodes import get_all_nodes
-from replace_node import replace_node
+from .classes import Node
+from .generate_random_tree import generate_random_tree
+from .get_all_nodes import get_all_nodes
+from .replace_node import replace_node
 
 def point_mutation(tree, max_lag=5, max_exponent=4):
     mutated_tree = deepcopy(tree)

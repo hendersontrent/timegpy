@@ -1,5 +1,5 @@
 import random
-from classes import Node
+from .classes import Node
 
 def generate_random_tree(max_depth, prob_exponent=0.3, max_lag=5, max_exponent=4, force_X_t=True):
     """

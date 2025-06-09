@@ -1,4 +1,4 @@
-from classes import Node
+from .classes import Node
 
 def tree_to_expression(node: Node) -> str:
     if node.op is None:

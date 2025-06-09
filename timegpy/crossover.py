@@ -1,8 +1,8 @@
 import random
 from copy import deepcopy
 from classes import Node
-from replace_node import replace_node
-from get_all_nodes import get_all_nodes
+from .replace_node import replace_node
+from .get_all_nodes import get_all_nodes
 
 def crossover(parent1: Node, parent2: Node) -> Node:
     p1 = deepcopy(parent1)

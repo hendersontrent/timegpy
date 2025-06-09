@@ -1,4 +1,4 @@
-from classes import Node
+from .classes import Node
 
 def get_all_nodes(node: Node, include_root=False) -> List[Node]:
     nodes = []

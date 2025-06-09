@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from evaluate_expression import evaluate_expression
+from .evaluate_expression import evaluate_expression
 
 def plot_feature(expr, X, y, bins=10):
     """

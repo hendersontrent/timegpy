@@ -3,8 +3,19 @@ from setuptools import setup, find_packages
 with open('README.md', 'r', encoding='utf-8') as f:
     long_description = f.read()
 
-with open("requirements.txt", "r") as f:
-    install_requires = f.read().splitlines()
+install_requires = [
+    'numpy',
+    'random',
+    'operator',
+    'pandas',
+    'matplotlib',
+    're',
+    'copy',
+    'typing',
+    'scikit-learn',
+    'scipy',
+    'tqdm'
+]
 
 setup(
     name='timegpy',
@@ -28,6 +39,9 @@ setup(
         "Programming Language :: Python",
         "Programming Language :: Python :: 3",
         "Intended Audience :: Science/Research",
+        "Operating System :: Unix"
+        "Operating System :: Microsoft :: Windows"
+        "Operating System :: MacOS"
         "Topic :: Scientific/Engineering :: Mathematics",
         "Topic :: Scientific/Engineering :: Information Analysis",
     ],

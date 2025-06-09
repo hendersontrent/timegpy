@@ -1,5 +1,6 @@
 import random
 import numpy as np
+import pandas as pd
 from copy import deepcopy
 from scipy.stats import zscore
 from generate_random_tree import generate_random_tree
@@ -75,9 +76,7 @@ def tsgp(
 
     random.seed(seed)
     generation_data = []
-    best_program = None
     best_fitness = -np.inf
-    best_gen = -1
     no_improve_counter = 0
 
     if z_score:
@@ -146,8 +145,6 @@ def tsgp(
 
         if gen_best_fit > best_fitness:
             best_fitness = gen_best_fit
-            best_program = deepcopy(population[gen_best_idx])
-            best_gen = gen
             no_improve_counter = 0
         else:
             no_improve_counter += 1

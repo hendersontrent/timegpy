@@ -1,18 +1,19 @@
+
+
 <!DOCTYPE html>
-<html class="writer-html5" lang="en" >
+<html class="writer-html5" lang="en">
 <head>
-  <meta charset="utf-8" />
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Fitness calculation approach &mdash; timegpy 0.1.0 documentation</title><link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <!--[if lt IE 9]>
-    <script src="_static/js/html5shiv.min.js"></script>
-  <![endif]-->
-  <script id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
-        <script src="_static/jquery.js"></script>
-        <script src="_static/underscore.js"></script>
-        <script src="_static/doctools.js"></script>
-        <script src="_static/language_data.js"></script>
+  <title>Fitness calculation approach &mdash; timegpy 0.1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js?v=2389946f"></script>
+      <script src="_static/doctools.js?v=888ff710"></script>
+      <script src="_static/sphinx_highlight.js?v=4825356b"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -24,17 +25,21 @@
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-            <a href="index.html" class="icon icon-home"> timegpy
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            timegpy
           </a>
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
-    <input type="text" name="q" placeholder="Search docs" />
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
     <input type="hidden" name="check_keywords" value="yes" />
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="Quickstart.html">Quickstart</a></li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">Fitness calculation approach</a><ul>
@@ -56,7 +61,7 @@
         <div class="rst-content">
           <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
       <li class="breadcrumb-item active">Fitness calculation approach</li>
       <li class="wy-breadcrumbs-aside">
             <a href="_sources/Fitness.rst.txt" rel="nofollow"> View page source</a>
@@ -67,10 +72,10 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
              
-  <div class="section" id="fitness-calculation-approach">
-<h1>Fitness calculation approach<a class="headerlink" href="#fitness-calculation-approach" title="Permalink to this headline">¶</a></h1>
-<div class="section" id="theoretical-basis">
-<h2>Theoretical basis<a class="headerlink" href="#theoretical-basis" title="Permalink to this headline">¶</a></h2>
+  <section id="fitness-calculation-approach">
+<h1>Fitness calculation approach<a class="headerlink" href="#fitness-calculation-approach" title="Permalink to this heading">¶</a></h1>
+<section id="theoretical-basis">
+<h2>Theoretical basis<a class="headerlink" href="#theoretical-basis" title="Permalink to this heading">¶</a></h2>
 <p>There are countless ways to calculate and optimise fitness for a classification context—such as</p>
 <p><code class="docutils literal notranslate"><span class="pre">timegpy</span></code> instead takes a more statistical approach to fitness by implementing one-way analysis of variance (ANOVA) for the calculation of time-average feature fitness. A one-way ANOVA compares whether two or more samples’ means are different, using the <em>F</em>-distribution as the null hypothesis. The <em>F</em>-statistic of a one-way ANOVA with two groups is equivalent to the square of the <em>t</em>-statistic from a Student’s <em>t</em>-test, however, ANOVA is generalisable to <em>N</em> number of groups—which is critical, as many time-series classification problems are multi-class problems. We use a one-way test because we seek to quantify group differences with only one time-average feature at a time (i.e., there is a single explanatory variable).</p>
 <p>From an interpretation standpoint, ANOVA is simple and intuitive. The <em>F</em>-statistic is a ratio between the mean square of the between-groups variance (i.e., how different the group means are from one another) and the within-groups variance (how dispersed each group’s distribution is about its mean)—both of which are derived from sums of squares:</p>
@@ -83,8 +88,8 @@
 <p>Prior to deciding on eta squared as the fitness metric, the <em>p</em>-value associated with the <em>F</em>-statistic (i.e., the probability of obtaining a result at least as extreme as the one we observed if the null hypothesis that there is no difference in group means is true) was first considered. This placed the objective function in a minimisation context instead. However, initial testing resulted in large numbers of identically performing features due to issues with floating point precision—the larger program size values in the adjusted fitness function dominated the tiny <em>p</em>-values that were incredibly close to <code class="docutils literal notranslate"><span class="pre">0</span></code>. Testing confirmed that eta squared was not impacted by this issue.</p>
 <p>The logic of the statistical approach to fitness calculation in <code class="docutils literal notranslate"><span class="pre">timegpy</span></code> is summarised graphically below:</p>
 <a class="reference internal image-reference" href="_images/anova.png"><img alt="Equation to calculate eta squared from an ANOVA." src="_images/anova.png" style="width: 600px;" /></a>
-</div>
-</div>
+</section>
+</section>
 
 
            </div>

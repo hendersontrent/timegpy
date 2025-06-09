@@ -1,3 +1,7 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "timegpy"
 version = "0.1.0"
@@ -30,8 +34,4 @@ classifiers=[
 ]
 
 [project.urls]
-"GitHub Repository (pycatch22)" = "https://github.com/hendersontrent/timegpy"
-
-[build-system]
-requires = ["setuptools"]
-build-backend = "setuptools.build_meta"
+"GitHub Repository (timegpy)" = "https://github.com/hendersontrent/timegpy"

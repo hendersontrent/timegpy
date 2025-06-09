@@ -15,9 +15,21 @@ Usage
 
 ``timegpy`` ("genetic programming for time-average features") is a Python package for finding informative time-average 'features' that can distinguish between classes. A time-series feature is a summary statistic which returns a scalar for each time series which summarises some property, such as the value of the autocorrelation function at lag 1, or the variance of sliding window variances taken across the time series (see `this paper <https://royalsocietypublishing.org/doi/abs/10.1098/rsif.2013.0048>`_, `this paper <https://www.sciencedirect.com/science/article/pii/S2405471217304386>`_, and `this book chapter <https://www.taylorfrancis.com/chapters/edit/10.1201/9781315181080-4/feature-based-time-series-analysis-ben-fulcher>`_ for more). 
 
-Time-average features---quantities of the functional form $\langle f(x_1, x_2, \dots, x_n)_t \rangle$ such as $\langle X_{t}X_{t+1} \rangle$ --- have shown utility in solving time-series problems across the sciences but have yet to be systematically applied to time-series classification problems. Time-average features are highly interpretable, which means they can be used to develop an intuitive understanding of why two classes might be well distinguished from one another by their temporal dynamics.
+Time-average features---quantities of the functional form:
 
-This tutorial will walk through basic functionality of the package using a simulated example. We will first generate some data, where we have n = 100 samples from an `autoregressive process of lag 1 <https://en.wikipedia.org/wiki/Autoregressive_model>`_ with an autoregressive coefficient of $\phi = 0.8$, and n = 100 samples drawn from simple Gaussian noise (with mean 0 and standard deviation 1), where every time series is T = 100 long:
+.. image:: images/functional-form.png
+  :width: 100
+  :alt: Time-average feature equation for AR(1).
+
+such as:
+
+.. image:: images/ar1-eq.png
+  :width: 100
+  :alt: Time-average feature equation for AR(1).
+
+have shown utility in solving time-series problems across the sciences but have yet to be systematically applied to time-series classification problems. Time-average features are highly interpretable, which means they can be used to develop an intuitive understanding of why two classes might be well distinguished from one another by their temporal dynamics.
+
+This tutorial will walk through basic functionality of the package using a simulated example. We will first generate some data, where we have n = 100 samples from an `autoregressive process of lag 1 <https://en.wikipedia.org/wiki/Autoregressive_model>`_ with an autoregressive coefficient of ``0.8``, and n = 100 samples drawn from simple Gaussian noise (with mean 0 and standard deviation 1), where every time series is T = 100 long:
 
 .. code::
    
@@ -60,7 +72,13 @@ This tutorial will walk through basic functionality of the package using a simul
 Structure of time-average feature expressions in timegpy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-In ``timegpy``, features are represented as strings to the user, but trees internally. For example, a time-average feature representing lag 1 autocorrelation function (on *z*-scored data) $\langle x_{t}x_{t+1} \rangle$ would be represented as ``"X_t+0 * X_t+1"``. More complex features may include exponents, such as ``"X_t+0 + X_t+1 ^ 3"`` and/or numerous other combinations of time lags.
+In ``timegpy``, features are represented as strings to the user, but trees internally. For example, a time-average feature representing lag 1 autocorrelation function (on *z*-scored data) which is mathematically written as: 
+
+.. image:: images/ar1-eq.png
+  :width: 100
+  :alt: Time-average feature equation for AR(1).
+
+would be represented in ``timegpy`` as ``"X_t+0 * X_t+1"`` or, more correctly, ``"mean(X_t+0 * X_t+1")``. More complex features may include exponents, such as ``"X_t+0 + X_t+1 ^ 3"`` and/or numerous other combinations of time lags.
 
 From a statistical perspective, for this tutorial example, we would expect to see the *best* performing feature to be ``"X_t+0 * X_t+1"`` sd this corresponds to the value of the autocorrelation function at lag 1---which we know from the data simulation code above to be the distinguishing temporal difference between the two processes. This creates a nice ground truth test case for the algorithm.
 
@@ -125,7 +143,7 @@ Additional graphical tools
    >>> plot.show()
 
 .. image:: images/ar1-plot.png
-  :width: 400
+  :width: 600
   :alt: Sums of squares equation for ANOVA.
 
 Intuitively, we see the Gaussian noise time series distributed around a feature value of ``0`` and the AR(1) data (Class 1) distributed around ``0.8``---which we know to be the autoregressive coefficient we used to generate the data. This, combined with the fact that ``"X_t+0 * X_t+1"`` was found to be the best time-average feature for classifying the time series, solidifies that the algorithm is working as expected.

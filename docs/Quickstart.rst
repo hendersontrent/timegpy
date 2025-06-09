@@ -24,7 +24,7 @@ Time-average features---quantities of the functional form:
 such as:
 
 .. image:: images/ar1-eq.png
-  :width: 100
+  :width: 50
   :alt: Time-average feature equation for AR(1).
 
 have shown utility in solving time-series problems across the sciences but have yet to be systematically applied to time-series classification problems. Time-average features are highly interpretable, which means they can be used to develop an intuitive understanding of why two classes might be well distinguished from one another by their temporal dynamics.
@@ -75,10 +75,10 @@ Structure of time-average feature expressions in timegpy
 In ``timegpy``, features are represented as strings to the user, but trees internally. For example, a time-average feature representing lag 1 autocorrelation function (on *z*-scored data) which is mathematically written as: 
 
 .. image:: images/ar1-eq.png
-  :width: 100
+  :width: 50
   :alt: Time-average feature equation for AR(1).
 
-would be represented in ``timegpy`` as ``"X_t+0 * X_t+1"`` or, more correctly, ``"mean(X_t+0 * X_t+1")``. More complex features may include exponents, such as ``"X_t+0 + X_t+1 ^ 3"`` and/or numerous other combinations of time lags.
+would be represented in ``timegpy`` as ``"X_t+0 * X_t+1"`` or, more correctly, ``"mean(X_t+0 * X_t+1)"``. More complex features may include exponents, such as ``"X_t+0 + X_t+1 ^ 3"`` and/or numerous other combinations of time lags.
 
 From a statistical perspective, for this tutorial example, we would expect to see the *best* performing feature to be ``"X_t+0 * X_t+1"`` sd this corresponds to the value of the autocorrelation function at lag 1---which we know from the data simulation code above to be the distinguishing temporal difference between the two processes. This creates a nice ground truth test case for the algorithm.
 

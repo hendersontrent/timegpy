@@ -12,6 +12,11 @@ install_requires = [
     'tqdm'
 ]
 
+docs_extras = [
+    'sphinx >= 3.0.0',  # Force RTD to use >= 3.0.0
+    'sphinx-rtd-theme >= 1.1.1'
+]
+
 setup(
     name='timegpy',
     license="MIT",
@@ -40,5 +45,6 @@ setup(
         "Topic :: Scientific/Engineering :: Mathematics",
         "Topic :: Scientific/Engineering :: Information Analysis",
     ],
-    install_requires=install_requires
+    install_requires=install_requires,
+    extras_require={'docs': docs_extras}
 )

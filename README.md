@@ -4,7 +4,11 @@ Find informative time-average features using genetic programming
 
 ## Installation
 
-Coming soon!
+You can install `timegpy` via GitHub:
+
+```{python}
+pip install git+https://github.com/hendersontrent/timegpy
+```
 
 ## Purpose
 

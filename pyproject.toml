@@ -27,7 +27,7 @@ classifiers=[
     "Intended Audience :: Science/Research",
     "Topic :: Scientific/Engineering :: Mathematics",
     "Topic :: Scientific/Engineering :: Information Analysis",
-    ]
+]
 
 [project.urls]
 "GitHub Repository (pycatch22)" = "https://github.com/hendersontrent/timegpy"

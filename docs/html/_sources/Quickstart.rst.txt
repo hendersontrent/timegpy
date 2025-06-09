@@ -116,7 +116,7 @@ The values of ``p_point_mutation``, ``p_subtree_mutation``, ``p_hoist_mutation``
 Additional graphical tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-``timegpy`` also contains functionality for interpreting a visualising genetic programming outputs. For example, users may seek to visualise class separation according to the best time-average feature (or any other). The convenience function ``plot_feature`` has been included for this purpose. It only requires a time-average feature expression as a string (using the conventions of ``timegpy``), the input data ``X``, and the class label vector ``y``. Here is an example using the best found expression from the above example:
+``timegpy`` also contains functionality for interpreting a visualising genetic programming outputs. For example, users may seek to visualise class separation according to the best time-average feature (or any other). The convenience function ``feature_hist`` has been included for this purpose. It only requires a time-average feature expression as a string (using the conventions of ``timegpy``), the input data ``X``, and the class label vector ``y``. Here is an example using the best found expression from the above example:
 
 .. code::
    
@@ -126,9 +126,20 @@ Additional graphical tools
 
 .. image:: images/ar1-plot.png
   :width: 600
-  :alt: Sums of squares equation for ANOVA.
+  :alt: Noise vs AR(1) histogram on the best individual feature.
 
 Intuitively, we see the Gaussian noise time series distributed around a feature value of :math:`0` and the AR(1) data (Class 1) distributed around :math:`0.8`---which we know to be the autoregressive coefficient we used to generate the data. This, combined with the fact that ``"X_t+0 * X_t+1"`` was found to be the best time-average feature for classifying the time series, solidifies that the algorithm is working as expected.
+
+There are also plotting options for the Pareto front (``pareto``) as well as average fitness by generation (``fitness_gen``). The latter looks like this:
+
+.. code::
+   
+   >>> plot_fitness_over_time(df_all, use_parsimony=True)
+   >>> plot.show()
+
+.. image:: images/fitness-plot.png
+  :width: 600
+  :alt: Average fitness by generation.
 
 Evaluating individual time-average feature expressions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

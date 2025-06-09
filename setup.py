@@ -7,8 +7,6 @@ install_requires = [
     'numpy',
     'pandas',
     'matplotlib',
-    'copy',
-    'typing',
     'scikit-learn',
     'scipy',
     'tqdm'

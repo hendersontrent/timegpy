@@ -5,11 +5,8 @@ with open('README.md', 'r', encoding='utf-8') as f:
 
 install_requires = [
     'numpy',
-    'random',
-    'operator',
     'pandas',
     'matplotlib',
-    're',
     'copy',
     'typing',
     'scikit-learn',

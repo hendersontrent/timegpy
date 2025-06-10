@@ -4,11 +4,11 @@ Quickstart
 Installation
 ------------
 
-You can install ``timegpy`` using pip:
+You can install ``timegpy`` via GitHub:
 
 .. code::
    
-     pip install git+https://github.com/hendersontrent/timegpy
+     pip install git+https://github.com/hendersontrent/timegpy.git
 
 Usage
 -----

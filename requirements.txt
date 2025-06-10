@@ -4,3 +4,4 @@ matplotlib
 pingouin
 scipy
 tqdm
+multiprocessing

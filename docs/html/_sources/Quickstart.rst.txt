@@ -121,8 +121,7 @@ Additional graphical tools
 .. code::
    
    >>> expression = df_best.iloc[0]['expression']
-   >>> plot = plot_feature(expression, X, y)
-   >>> plot.show()
+   >>> plot_feature(expression, X, y)
 
 .. image:: images/ar1-plot.png
   :width: 600
@@ -134,8 +133,7 @@ There are also plotting options for the Pareto front (``pareto``) as well as ave
 
 .. code::
    
-   >>> plot_fitness_over_time(df_all, use_parsimony=True)
-   >>> plot.show()
+   >>> fitness_gen(df_all, use_parsimony=True)
 
 .. image:: images/fitness-plot.png
   :width: 600
@@ -193,19 +191,14 @@ Since the current fitness metric is an (adjusted) :math:`\eta^{2}` from an ANOVA
 
    >>> X2, y2 = generate_noise_vs_ar1_vs_ar2(N=100, T=100, phi1=0.8, phi2=0.5, phi3=0.3, seed=123)
 
-   >>> X2, y2, df_all2, df_best2 = tsgp(
-   >>>  X2, y2,
-   >>>  pop_size=1000,
-   >>>  fitness_threshold=0.99
-   >>> )
+   >>> X2, y2, df_all2, df_best2 = tsgp(X2, y2)
 
 We can now easily visualise the best performing feature and how each class is distributed on it:
 
 .. code::
    
    >>> expression2 = df_best2.iloc[0]['expression']
-   >>> plot2 = feature_hist2(expression2, X2, y2)
-   >>> plot2.show()
+   >>> feature_hist2(expression2, X2, y2)
 
 .. image:: images/noise-ar1-ar2.png
   :width: 600

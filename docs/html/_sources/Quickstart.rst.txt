@@ -109,9 +109,9 @@ Important parameter notes
 
 ``fitness_threshold`` must be :math:`0 \geq \text{fitness\_threshold} \leq 1` as the current objective function maximises values between :math:`0` and :math:`1`.
 
-The values of ``p_point_mutation``, ``p_subtree_mutation``, ``p_hoist_mutation``, and ``p_crossover`` must sum to :math:`<1` as the remaining probability is allocated to 'no change'.
+The values of ``p_point_mutation``, ``p_subtree_mutation``, ``p_hoist_mutation``, and ``p_crossover`` must sum to :math:`\textless 1` as the remaining probability is allocated to 'no change'.
 
-``parsimony_coefficient``, if used, must be :math:`<1` otherwise it does not represent a complexity penalty.
+``parsimony_coefficient``, if used, must be :math:`\textless 1` otherwise it does not represent a complexity penalty.
 
 Additional graphical tools
 ^^^^^^^^^^^^^^^^^^^^^^^^^^

@@ -5,50 +5,57 @@ from .generate_random_tree import generate_random_tree
 from .get_all_nodes import get_all_nodes
 from .replace_node import replace_node
 
-def point_mutation(tree, max_lag=5, max_exponent=4):
-    mutated_tree = deepcopy(tree)
+def point_mutation(tree, max_lag, max_exponent, const_range=(-1.0, 1.0)):
+    """
+    Mutates a single node in the tree. If const_range is None, no constant mutations occur.
+    """
+    all_nodes = get_all_nodes(tree)
+    node = random.choice(all_nodes)
 
-    def collect_nodes(node, nodes):
-        nodes.append(node)
-        if node.left:
-            collect_nodes(node.left, nodes)
-        if node.right:
-            collect_nodes(node.right, nodes)
+    if node.is_operator():
+        node.op = random.choice(['+', '-', '*', '/'])
 
-    # Collect all nodes in the tree
-    all_nodes = []
-    collect_nodes(mutated_tree, all_nodes)
-
-    # Select a random node
-    selected_node = random.choice(all_nodes)
-
-    # Mutate depending on node type
-    if selected_node.op is None:  # It's a terminal node
-        if selected_node.lag != 0:  # Don't mutate X_t
-            selected_node.lag = random.randint(1, max_lag)
-        if random.random() < 0.5:  # 50% chance to add/change exponent
-            selected_node.exponent = random.randint(2, max_exponent)
+    elif node.is_lag_term():
+        if node.lag != 0:
+            node.lag = random.randint(1, max_lag)
+        if random.random() < 0.5:
+            node.exponent = random.randint(2, max_exponent)
         else:
-            selected_node.exponent = None
-    else:  # It's an operator node
-        selected_node.op = random.choice(['+', '-', '*', '/', '^'])
+            node.exponent = None
 
-    return mutated_tree
+    elif node.is_constant() and const_range is not None:
+        node.value = random.uniform(*const_range)
 
-def subtree_mutation(tree: Node, max_lag_terms=4, prob_exponent=0.3, max_lag=5, max_exponent=4) -> Node:
+    return tree
+
+def subtree_mutation(tree: Node, max_lag_terms=4, prob_exponent=0.3, max_lag=5,
+                     max_exponent=4, const_range=(-1.0, 1.0), p_const=0.3) -> Node:
+    """
+    Perform subtree mutation by replacing a randomly chosen subtree with a new randomly generated one.
+
+    Parameters:
+    - tree: The original expression tree.
+    - max_lag_terms: Max number of lag/constant terms for the new subtree.
+    - prob_exponent: Probability to include exponent on lag nodes.
+    - max_lag: Maximum time lag.
+    - max_exponent: Maximum exponent value.
+    - const_range: Tuple (low, high) or None to control float constant inclusion.
+    - p_const: Probability of using a constant node vs a lag node in leaves.
+    """
     tree = deepcopy(tree)
     nodes = get_all_nodes(tree, include_root=True)
     target = random.choice(nodes)
 
-    # Mutate with a small random subtree (at least 2 lag terms)
+    # Generate new subtree
     subtree_lag_terms = random.randint(2, min(max_lag_terms, 4))
-
     new_subtree = generate_random_tree(
         max_depth=subtree_lag_terms,
         prob_exponent=prob_exponent,
         max_lag=max_lag,
         max_exponent=max_exponent,
-        force_X_t=True
+        force_X_t=True,
+        const_range=const_range,
+        p_const=p_const
     )
 
     if target is tree:
@@ -56,7 +63,6 @@ def subtree_mutation(tree: Node, max_lag_terms=4, prob_exponent=0.3, max_lag=5, 
     else:
         replace_node(tree, target, new_subtree)
         return tree
-
 
 def hoist_mutation(tree: Node) -> Node:
     from copy import deepcopy

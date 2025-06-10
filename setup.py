@@ -9,8 +9,7 @@ install_requires = [
     'matplotlib',
     'pingouin',
     'scipy',
-    'tqdm',
-    'multiprocessing'
+    'tqdm'
 ]
 
 docs_extras = [

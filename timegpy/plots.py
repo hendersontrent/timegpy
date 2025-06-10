@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 from .evaluate_expression import evaluate_expression
 
-def feature_hist(expr, X, y, bins=10):
+def plot_hist(expr, X, y, bins=10):
     """
     Plots a histogram of the feature (from best_info_df) by class, with vertical lines at class means.
     
@@ -43,7 +43,7 @@ def feature_hist(expr, X, y, bins=10):
     plt.tight_layout()
     return plt
 
-def pareto(df_all, use_parsimony=True, jitter_strength=0.1):
+def plot_pareto(df_all, use_parsimony=True, jitter_strength=0.1):
     """
     Plots all programs as points in a Pareto frontier scatter plot.
 
@@ -74,7 +74,7 @@ def pareto(df_all, use_parsimony=True, jitter_strength=0.1):
     plt.tight_layout()
     return fig
 
-def fitness_gen(df_all, use_parsimony=True):
+def plot_gen(df_all, use_parsimony=True):
     """
     Plots mean fitness (or adjusted fitness) by generation with ±1 SD error bars.
     X-axis is forced to show integer ticks for generations.

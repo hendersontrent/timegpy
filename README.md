@@ -7,7 +7,7 @@ Find informative time-average features using genetic programming
 You can install `timegpy` via GitHub:
 
 ```{python}
-pip install git+https://github.com/hendersontrent/timegpy
+pip install git+https://github.com/hendersontrent/timegpy.git
 ```
 
 ## How-to guide

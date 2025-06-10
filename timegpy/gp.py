@@ -5,7 +5,6 @@ from copy import deepcopy
 from scipy.stats import zscore
 from .generate_random_tree import generate_random_tree
 from .evaluate_tree import evaluate_tree
-from .evaluate_program_wrapper import evaluate_program_wrapper
 from .mutation import point_mutation
 from .mutation import subtree_mutation
 from .mutation import hoist_mutation

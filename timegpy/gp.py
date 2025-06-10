@@ -1,7 +1,6 @@
 import random
 import numpy as np
 import pandas as pd
-import multiprocessing as mp
 from copy import deepcopy
 from scipy.stats import zscore
 from .generate_random_tree import generate_random_tree
@@ -39,8 +38,7 @@ def tsgp(
     p_const=0.1,
     seed=123,
     n_generation_improve=2,
-    z_score=True,
-    n_procs=1
+    z_score=True
 ):
     """
     Evolve a genetic programming algorithm to find informative time-average features for time-series classification.
@@ -68,7 +66,6 @@ def tsgp(
         seed (int): fixes Python's random seed for reproducibility. Defaults to 123
         n_generation_improve (int): number of generations of no fitness improvement before algorithm terminates early. Defaults to 1
         z_score (bool): whether to z-score input data X. Defaults to True
-        n_procs (int): number of processes to use for parallel processing. Defaults to 1 for serial computation
 
     Returns:
         Data frame of fitness results for every generation and a data frame of the best individual time-average feature for easy identification
@@ -79,7 +76,6 @@ def tsgp(
     # Validate probabilities sum
 
     total_mutation_prob = p_point_mutation + p_subtree_mutation + p_hoist_mutation + p_crossover
-
     if total_mutation_prob >= 1.0:
         raise ValueError("The sum of p_point_mutation, p_subtree_mutation, p_hoist_mutation, and p_crossover must be less than 1.")
 
@@ -103,30 +99,20 @@ def tsgp(
     if tournament_size >= pop_size:
         raise ValueError("tournament_size must be smaller than pop_size.")
     
-    #------------- Define functions --------------
-    
+    #------------- Define tournament sub-algorithm --------------
+
     def tournament_selection(pop, fitnesses, exclude_idx=None):
         indices = list(range(len(pop)))
         if exclude_idx is not None:
             indices.remove(exclude_idx)
+
         tournament_indices = random.sample(indices, min(tournament_size, len(indices)))
         selected = [(pop[i], fitnesses[i]) for i in tournament_indices if not np.isnan(fitnesses[i])]
         if not selected:
             return deepcopy(random.choice(pop))
         return deepcopy(max(selected, key=lambda x: x[1])[0])
 
-    def evaluate_program(program):
-        feature = evaluate_tree(program, X)
-        if feature is None or np.isnan(feature).all():
-            return np.nan, calculate_program_size(program)
-        try:
-            fitness = compute_eta_squared(feature, y)
-        except:
-            fitness = np.nan
-        size = calculate_program_size(program)
-        return fitness, size
-
-    #------------- Run main algorithm --------------
+    #------------- Main algorithm --------------
 
     random.seed(seed)
     generation_data = []
@@ -136,6 +122,7 @@ def tsgp(
     if z_score:
         X = zscore(X, axis=1, nan_policy='omit')
 
+    # Initial population with constants
     population = [
         generate_random_tree(
             max_depth=max_depth,
@@ -150,30 +137,31 @@ def tsgp(
 
     for gen in range(n_generations):
         print(f"Evolving generation {gen}")
+        fitness_scores = []
+        program_sizes = []
 
-        if n_procs > 1:
-            args = [(program, X, y) for program in population]
-            with mp.Pool(n_procs) as pool:
-                results = pool.map(evaluate_program_wrapper, args)
-            fitness_scores, program_sizes = zip(*results)
-            fitness_scores = list(fitness_scores)
-            program_sizes = list(program_sizes)
-        else:
-            fitness_scores = []
-            program_sizes = []
-            for program in population:
-                fitness, size = evaluate_program(program)
-                fitness_scores.append(fitness)
-                program_sizes.append(size)
+        for i, program in enumerate(population):
+            feature = evaluate_tree(program, X)
+            if feature is None or np.isnan(feature).all():
+                fitness = np.nan
+            else:
+                try:
+                    fitness = compute_eta_squared(feature, y)
+                except:
+                    fitness = np.nan
 
-        clean_fitness, clean_sizes, clean_programs = [], [], []
-        for f, s, p in zip(fitness_scores, program_sizes, population):
-            if not np.isnan(f):
-                clean_fitness.append(f)
-                clean_sizes.append(s)
-                clean_programs.append(p)
+            size = calculate_program_size(program)
+            fitness_scores.append(fitness)
+            program_sizes.append(size)
 
         if use_parsimony:
+            clean_fitness, clean_sizes, clean_programs = [], [], []
+            for f, s, p in zip(fitness_scores, program_sizes, population):
+                if not np.isnan(f):
+                    clean_fitness.append(f)
+                    clean_sizes.append(s)
+                    clean_programs.append(p)
+
             fitness_np = np.array(clean_fitness, dtype=float)
             sizes_np = np.array(clean_sizes, dtype=float)
 
@@ -223,8 +211,7 @@ def tsgp(
                 print("Stopping early: no improvement in best fitness.")
             break
 
-        # [reproduction logic unchanged...]
-
+        # Generate new population
         remaining_prob = 1.0 - (p_point_mutation + p_subtree_mutation + p_hoist_mutation + p_crossover)
         operations = ['point', 'subtree', 'hoist', 'crossover', 'clone']
         weights = [p_point_mutation, p_subtree_mutation, p_hoist_mutation, p_crossover, remaining_prob]
@@ -269,4 +256,4 @@ def tsgp(
     best_candidates = df_all[df_all['fitness_parsimony' if use_parsimony else 'fitness'] == best_value]
     best_info = best_candidates.sort_values(by=['generation', 'individual']).iloc[[0]].copy()
 
-    return df_all, best_info
+    return X, y, df_all, best_info

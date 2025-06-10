@@ -6,6 +6,7 @@ from copy import deepcopy
 from scipy.stats import zscore
 from .generate_random_tree import generate_random_tree
 from .evaluate_tree import evaluate_tree
+from .evaluate_program_wrapper import evaluate_program_wrapper
 from .mutation import point_mutation
 from .mutation import subtree_mutation
 from .mutation import hoist_mutation
@@ -78,7 +79,7 @@ def tsgp(
     # Validate probabilities sum
 
     total_mutation_prob = p_point_mutation + p_subtree_mutation + p_hoist_mutation + p_crossover
-    
+
     if total_mutation_prob >= 1.0:
         raise ValueError("The sum of p_point_mutation, p_subtree_mutation, p_hoist_mutation, and p_crossover must be less than 1.")
 
@@ -151,8 +152,9 @@ def tsgp(
         print(f"Evolving generation {gen}")
 
         if n_procs > 1:
+            args = [(program, X, y) for program in population]
             with mp.Pool(n_procs) as pool:
-                results = pool.map(evaluate_program, population)
+                results = pool.map(evaluate_program_wrapper, args)
             fitness_scores, program_sizes = zip(*results)
             fitness_scores = list(fitness_scores)
             program_sizes = list(program_sizes)

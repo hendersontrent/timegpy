@@ -255,4 +255,4 @@ def tsgp(
     best_candidates = df_all[df_all['fitness_parsimony' if use_parsimony else 'fitness'] == best_value]
     best_info = best_candidates.sort_values(by=['generation', 'individual']).iloc[[0]].copy()
 
-    return X, y, df_all, best_info
+    return df_all, best_info

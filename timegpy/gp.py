@@ -6,12 +6,9 @@ from scipy.stats import zscore
 from multiprocessing import Pool
 from functools import partial
 from .generate_random_tree import generate_random_tree
-from .evaluate_tree import evaluate_tree
 from .mutation import point_mutation
 from .mutation import subtree_mutation
 from .mutation import hoist_mutation
-from .fitness import compute_eta_squared
-from .calculate_program_size import calculate_program_size
 from .parsers import tree_to_feature_string
 from .checks import ensure_has_X_t
 from .crossover import crossover

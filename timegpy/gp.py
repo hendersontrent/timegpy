@@ -15,6 +15,7 @@ from .calculate_program_size import calculate_program_size
 from .parsers import tree_to_feature_string
 from .checks import ensure_has_X_t
 from .crossover import crossover
+from .evaluate_program_wrapper import evaluate_program
 
 def tsgp(
     X,
@@ -115,15 +116,15 @@ def tsgp(
             return deepcopy(random.choice(pop))
         return deepcopy(max(selected, key=lambda x: x[1])[0])
 
-    def evaluate_program(program, X, y):
-        try:
-            feature = evaluate_tree(program, X)
-            if feature is None or np.isnan(feature).all():
-                return np.nan, calculate_program_size(program)
-            fitness = compute_eta_squared(feature, y)
-            return fitness, calculate_program_size(program)
-        except Exception:
-            return np.nan, calculate_program_size(program)
+    #def evaluate_program(program, X, y):
+    #    try:
+    #        feature = evaluate_tree(program, X)
+    #        if feature is None or np.isnan(feature).all():
+    #            return np.nan, calculate_program_size(program)
+    #        fitness = compute_eta_squared(feature, y)
+    #        return fitness, calculate_program_size(program)
+    #    except Exception:
+    #        return np.nan, calculate_program_size(program)
         
     #------------- Run main algorithm --------------
 

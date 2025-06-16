@@ -103,6 +103,7 @@ Despite the simplicity of the above call, it is highly likely that users will se
 * ``seed`` (int): fixes Python's random seed for reproducibility. Defaults to ``123``
 * ``n_generation_improve`` (int): number of generations of no fitness improvement before algorithm terminates early. Defaults to ``1``
 * ``z_score`` (bool): whether to z-score input data X. Defaults to ``True``
+* ``n_procs`` (int): number of processes to use if parallel processing is desired. Defaults to ``1`` for serial processing
 
 Important parameter notes
 ^^^^^^^^^^^^^^^^^^^^^^^^^

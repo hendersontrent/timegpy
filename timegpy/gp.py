@@ -3,23 +3,23 @@ import numpy as np
 import pandas as pd
 from copy import deepcopy
 from scipy.stats import zscore
+from multiprocessing import Pool
+from functools import partial
 from .generate_random_tree import generate_random_tree
-from .evaluate_tree import evaluate_tree
 from .mutation import point_mutation
 from .mutation import subtree_mutation
 from .mutation import hoist_mutation
-from .fitness import compute_eta_squared
-from .calculate_program_size import calculate_program_size
 from .parsers import tree_to_feature_string
 from .checks import ensure_has_X_t
 from .crossover import crossover
+from .evaluate_program_wrapper import evaluate_program
 
 def tsgp(
     X,
     y,
-    pop_size=100,
-    n_generations=5,
-    fitness_threshold=0.95,
+    pop_size=1000,
+    n_generations=20,
+    fitness_threshold=1.0,
     p_point_mutation=0.01,
     p_subtree_mutation=0.01,
     p_hoist_mutation=0.01,
@@ -33,19 +33,21 @@ def tsgp(
     max_depth=8,
     max_lag=8,
     max_exponent=5,
+    const_range=(-1.0, 1.0),
+    p_const=0.1,
     seed=123,
-    n_generation_improve=1,
-    z_score=True
+    n_generation_improve=2,
+    z_score=True,
+    n_procs=1
 ):
-    
     """
     Evolve a genetic programming algorithm to find informative time-average features for time-series classification.
     Args:
         X (array): ID by time matrix containing time-series data
         y (array): vector of class labels for each row of X
-        pop_size (int): size of each population. Defaults to 100
-        n_generations (int): maximum number of generations. Defaults to 5
-        fitness_threshold (float): objective function value which if equalled or exceeded, will terminate the algorithm. Defaults to 0.95
+        pop_size (int): size of each population. Defaults to 1000
+        n_generations (int): maximum number of generations. Defaults to 20
+        fitness_threshold (float): objective function value which if equalled or exceeded, will terminate the algorithm. Defaults to 1.0 for no stopping
         p_point_mutation (float): probability of point mutation occurring. Defaults to 0.01
         p_subtree_mutation (float): probability of subtree mutation occurring. Defaults to 0.01
         p_hoist_mutation (float): probability of hoist mutation occurring. Defaults to 0.01
@@ -59,20 +61,69 @@ def tsgp(
         max_depth (int): maximum number of time-lag terms allowed in a single feature expression. Defaults to 8
         max_lag (int): maximum time-lag allowed in a single feature expression. Defaults to 8
         max_exponent (int): maximum exponent allowed. Defaults to 5
+        const_range (tuple): either a tuple of floats for the range of values a constant term can take, or None for no constants. Defaults to (-1.0, 1.0)
+        p_const (int): probability of a given leaf node being a constant versus a time lag. Defaults to 0.1
         seed (int): fixes Python's random seed for reproducibility. Defaults to 123
         n_generation_improve (int): number of generations of no fitness improvement before algorithm terminates early. Defaults to 1
-        z_score (bool): whether to z-score input data X. Defaults to True
+        z_score (bool): whether to z-score input data X. Defaults to True,
+        n_procs (int): number of processes to use if parallel processing is desired. Defaults to 1 for serial processing
 
     Returns:
-        Input data X, class label vector y, fitness results for every generation, and best individual time-average feature.
+        Data frame of fitness results for every generation and a data frame of the best individual time-average feature for easy identification
     """
 
-    def tournament_selection(pop, fitnesses):
-        selected = random.sample(list(zip(pop, fitnesses)), tournament_size)
-        selected = [item for item in selected if not np.isnan(item[1])]
+    #------------- Check essential inputs --------------
+
+    # Validate probabilities sum
+
+    total_mutation_prob = p_point_mutation + p_subtree_mutation + p_hoist_mutation + p_crossover
+    if total_mutation_prob >= 1.0:
+        raise ValueError("The sum of p_point_mutation, p_subtree_mutation, p_hoist_mutation, and p_crossover must be less than 1.")
+
+    # Validate parsimony coefficient
+
+    if not (0 < parsimony_coefficient < 1):
+        raise ValueError("parsimony_coefficient must be between 0 and 1.")
+
+    # Validate constant probability
+
+    if not (0 < p_const < 1):
+        raise ValueError("p_const must be between 0 and 1.")
+
+    # Validate fitness threshold
+
+    if not (0 < fitness_threshold <= 1):
+        raise ValueError("fitness_threshold must be between 0 (exclusive) and 1 (inclusive).")
+
+    # Validate tournament size
+
+    if tournament_size >= pop_size:
+        raise ValueError("tournament_size must be smaller than pop_size.")
+    
+    #------------- Define helper functions --------------
+    
+    def tournament_selection(pop, fitnesses, exclude_idx=None):
+        indices = list(range(len(pop)))
+        if exclude_idx is not None:
+            indices.remove(exclude_idx)
+
+        tournament_indices = random.sample(indices, min(tournament_size, len(indices)))
+        selected = [(pop[i], fitnesses[i]) for i in tournament_indices if not np.isnan(fitnesses[i])]
         if not selected:
             return deepcopy(random.choice(pop))
         return deepcopy(max(selected, key=lambda x: x[1])[0])
+
+    #def evaluate_program(program, X, y):
+    #    try:
+    #        feature = evaluate_tree(program, X)
+    #        if feature is None or np.isnan(feature).all():
+    #            return np.nan, calculate_program_size(program)
+    #        fitness = compute_eta_squared(feature, y)
+    #        return fitness, calculate_program_size(program)
+    #    except Exception:
+    #        return np.nan, calculate_program_size(program)
+        
+    #------------- Run main algorithm --------------
 
     random.seed(seed)
     generation_data = []
@@ -82,34 +133,34 @@ def tsgp(
     if z_score:
         X = zscore(X, axis=1, nan_policy='omit')
 
-    population = [generate_random_tree(max_depth, p_exponent, max_lag, max_exponent) for _ in range(pop_size)]
+    population = [
+        generate_random_tree(
+            max_depth=max_depth,
+            prob_exponent=p_exponent,
+            max_lag=max_lag,
+            max_exponent=max_exponent,
+            const_range=const_range,
+            p_const=p_const,
+            force_X_t=True
+        ) for _ in range(pop_size)
+    ]
 
     for gen in range(n_generations):
-        fitness_scores = []
-        program_sizes = []
+        print(f"Evolving generation {gen}")
+        
+        if n_procs > 1:
+            with Pool(processes=n_procs) as pool:
+                results = pool.map(partial(evaluate_program, X=X, y=y), population)
+        else:
+            results = [evaluate_program(prog, X, y) for prog in population]
 
-        for i, program in enumerate(population):
-            feature = evaluate_tree(program, X)
-            if feature is None or np.isnan(feature).all():
-                fitness = np.nan
-            else:
-                try:
-                    fitness = compute_eta_squared(feature, y)
-                except:
-                    fitness = np.nan
-
-            size = calculate_program_size(program)
-            fitness_scores.append(fitness)
-            program_sizes.append(size)
+        fitness_scores, program_sizes = zip(*results)
 
         if use_parsimony:
-            clean_fitness, clean_sizes, clean_programs = [], [], []
-            for f, s, p in zip(fitness_scores, program_sizes, population):
-                if not np.isnan(f):
-                    clean_fitness.append(f)
-                    clean_sizes.append(s)
-                    clean_programs.append(p)
-
+            clean_data = [(f, s, p) for f, s, p in zip(fitness_scores, program_sizes, population) if not np.isnan(f)]
+            if not clean_data:
+                break  # All fitnesses are NaN, abort
+            clean_fitness, clean_sizes, clean_programs = zip(*clean_data)
             fitness_np = np.array(clean_fitness, dtype=float)
             sizes_np = np.array(clean_sizes, dtype=float)
 
@@ -123,9 +174,9 @@ def tsgp(
                 parsimony = parsimony_coefficient
 
             fitness_parsimony = fitness_np - parsimony * sizes_np
-            population = clean_programs
-            program_sizes = clean_sizes
-            fitness_scores = clean_fitness
+            population = list(clean_programs)
+            program_sizes = list(clean_sizes)
+            fitness_scores = list(clean_fitness)
         else:
             fitness_parsimony = fitness_scores
 
@@ -139,7 +190,6 @@ def tsgp(
                 'fitness_parsimony': fit_adj
             })
 
-        # Identify best of current generation
         gen_best_idx = np.nanargmax(fitness_parsimony)
         gen_best_fit = fitness_parsimony[gen_best_idx]
 
@@ -160,30 +210,39 @@ def tsgp(
                 print("Stopping early: no improvement in best fitness.")
             break
 
-        # Generate next generation
+        # Mutation & crossover operations
         remaining_prob = 1.0 - (p_point_mutation + p_subtree_mutation + p_hoist_mutation + p_crossover)
         operations = ['point', 'subtree', 'hoist', 'crossover', 'clone']
         weights = [p_point_mutation, p_subtree_mutation, p_hoist_mutation, p_crossover, remaining_prob]
 
         new_population = []
-        for _ in range(pop_size):
-            parent1 = tournament_selection(population, fitness_parsimony)
+        for idx in range(pop_size):
+            parent1_idx = random.randint(0, len(population) - 1)
+            parent1 = deepcopy(population[parent1_idx])
             operation = random.choices(operations, weights=weights)[0]
 
             if operation == 'point':
-                child = point_mutation(parent1, max_lag, max_exponent)
+                child = point_mutation(parent1, max_lag=max_lag, max_exponent=max_exponent, const_range=const_range)
             elif operation == 'subtree':
-                child = subtree_mutation(parent1, max_depth, p_exponent, max_lag, max_exponent)
+                child = subtree_mutation(
+                    parent1,
+                    max_lag_terms=max_depth,
+                    prob_exponent=p_exponent,
+                    max_lag=max_lag,
+                    max_exponent=max_exponent,
+                    const_range=const_range,
+                    p_const=p_const
+                )
             elif operation == 'hoist':
                 child = hoist_mutation(parent1)
                 if not ensure_has_X_t(child):
                     child = deepcopy(parent1)
             elif operation == 'crossover':
-                parent2 = tournament_selection(population, fitness_parsimony)
+                parent2 = tournament_selection(population, fitness_parsimony, exclude_idx=parent1_idx)
                 child = crossover(parent1, parent2)
                 if not ensure_has_X_t(child):
                     child = deepcopy(parent1)
-            else:  # 'clone'
+            else:
                 child = deepcopy(parent1)
 
             new_population.append(child)
@@ -192,9 +251,8 @@ def tsgp(
 
     df_all = pd.DataFrame(generation_data)
 
-    # Resolve ties by earliest appearance
     best_value = df_all['fitness_parsimony'].max() if use_parsimony else df_all['fitness'].max()
     best_candidates = df_all[df_all['fitness_parsimony' if use_parsimony else 'fitness'] == best_value]
     best_info = best_candidates.sort_values(by=['generation', 'individual']).iloc[[0]].copy()
 
-    return X, y, df_all, best_info
+    return df_all, best_info

@@ -17,7 +17,7 @@ description = "Find informative time-average features using genetic programming"
 readme = "README.md"
 license = {text = "MIT"}
 requires-python = ">=3.8"
-dependencies=["numpy", "pandas", "matplotlib", "scikit-learn", "scipy", "tqdm"]
+dependencies=["numpy", "pandas", "matplotlib", "pingouin", "scipy", "tqdm"]
 keywords=[
     "time series",
     "classification",

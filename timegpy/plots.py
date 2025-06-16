@@ -71,6 +71,10 @@ def plot_pareto(df_all, use_parsimony=True, jitter_strength=0.1):
     ax.set_xlabel("Program size", fontsize=12)
     ax.set_ylabel("Fitness (adjusted)" if use_parsimony else "Fitness", fontsize=12)
     ax.grid(True)
+
+    # Ensure x-axis ticks are integers
+    ax.xaxis.set_major_locator(MaxNLocator(integer=True))
+
     plt.tight_layout()
     return fig
 

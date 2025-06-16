@@ -18,7 +18,7 @@ def evaluate_expression(expr, X):
 
     # 3. Replace X_t+n with x[i + n]
     expr_converted = re.sub(r'X_t\+(\d+)', r'x[i + \1]', expr_inner)
-    print(expr_converted)
+    #print(expr_converted)
 
     # 4. Evaluate expression for each row
     result = []

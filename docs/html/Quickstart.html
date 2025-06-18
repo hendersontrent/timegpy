@@ -195,11 +195,11 @@
 </div>
 <a class="reference internal image-reference" href="_images/ar1-plot.png"><img alt="Noise vs AR(1) histogram on the best individual feature." src="_images/ar1-plot.png" style="width: 600px;" /></a>
 <p>Intuitively, we see the Gaussian noise time series distributed around a feature value of <img class="math" src="_images/math/31fdf41b39df23c95e52c5aef07f59d9adf82f3c.png" alt="0"/> and the AR(1) data (Class 1) distributed around <img class="math" src="_images/math/16bbac04c3b1943a78be435030ac09caeacbb029.png" alt="0.8"/>—which we know to be the autoregressive coefficient we used to generate the data. This, combined with the fact that <code class="docutils literal notranslate"><span class="pre">&quot;X_t+0</span> <span class="pre">*</span> <span class="pre">X_t+1&quot;</span></code> was found to be the best time-average feature for classifying the time series, solidifies that the algorithm is working as expected.</p>
-<p>There are also plotting options for the Pareto front (<code class="docutils literal notranslate"><span class="pre">plot_pareto</span></code>) as well as average fitness by generation (<code class="docutils literal notranslate"><span class="pre">plot_gen</span></code>). The latter looks like this:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plot_gen</span><span class="p">(</span><span class="n">df_all</span><span class="p">,</span> <span class="n">use_parsimony</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<p>There is also the ability to plot the Pareto front of all features found across all generations:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plot_pareto</span><span class="p">(</span><span class="n">df_all</span><span class="p">,</span> <span class="n">df_best</span><span class="p">,</span> <span class="n">use_parsimony</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mf">0.95</span><span class="p">)</span>
 </pre></div>
 </div>
-<a class="reference internal image-reference" href="_images/fitness-plot.png"><img alt="Average fitness by generation." src="_images/fitness-plot.png" style="width: 600px;" /></a>
+<a class="reference internal image-reference" href="_images/pareto-front.png"><img alt="Pareto front of all feature program sizes and adjusted fitness values." src="_images/pareto-front.png" style="width: 600px;" /></a>
 </section>
 <section id="evaluating-individual-time-average-feature-expressions">
 <h3>Evaluating individual time-average feature expressions<a class="headerlink" href="#evaluating-individual-time-average-feature-expressions" title="Permalink to this heading"></a></h3>
@@ -273,11 +273,6 @@
 &gt;&gt;&gt;      └── 3
 </pre></div>
 </div>
-<p>And the ability to plot the Pareto front of all features found across all generations:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plot_pareto</span><span class="p">(</span><span class="n">df_all</span><span class="p">,</span> <span class="n">df_best</span><span class="p">,</span> <span class="n">use_parsimony</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mf">0.95</span><span class="p">)</span>
-</pre></div>
-</div>
-<a class="reference internal image-reference" href="_images/pareto-front.png"><img alt="Pareto front of all feature program sizes and adjusted fitness values." src="_images/pareto-front.png" style="width: 600px;" /></a>
 </section>
 </section>
 </section>

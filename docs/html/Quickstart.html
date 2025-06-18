@@ -53,6 +53,7 @@
 <li class="toctree-l3"><a class="reference internal" href="#additional-graphical-tools">Additional graphical tools</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#evaluating-individual-time-average-feature-expressions">Evaluating individual time-average feature expressions</a></li>
 <li class="toctree-l3"><a class="reference internal" href="#multiclass-problems">Multiclass problems</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#additional-functionality">Additional functionality</a></li>
 </ul>
 </li>
 </ul>
@@ -128,7 +129,8 @@
 
 <span class="gp">&gt;&gt;&gt; </span>     <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">ar1_data</span><span class="p">,</span> <span class="n">noise_data</span><span class="p">])</span>
 
-<span class="gp">&gt;&gt;&gt; </span>     <span class="c1"># Labels</span>
+<span class="gp">&gt;&gt;&gt; </span>     <span class="c1"># Class labels</span>
+
 <span class="gp">&gt;&gt;&gt; </span>     <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span> <span class="o">+</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span><span class="p">)</span>
 
 <span class="gp">&gt;&gt;&gt; </span>     <span class="k">return</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span>
@@ -144,13 +146,11 @@
 <section id="doing-genetic-programming-in-timegpy">
 <h3>Doing genetic programming in timegpy<a class="headerlink" href="#doing-genetic-programming-in-timegpy" title="Permalink to this heading"></a></h3>
 <p>The core function in <code class="docutils literal notranslate"><span class="pre">timegpy</span></code> is <code class="docutils literal notranslate"><span class="pre">tsgp</span></code> (‘time-series genetic programming’). We can exercise high degrees of control over the algorithm’s evolution by adjusting the large number of available arguments. Here is a simple call using all of the default parameters:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">df_all</span><span class="p">,</span> <span class="n">df_best</span> <span class="o">=</span> <span class="n">tsgp</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df_all</span><span class="p">,</span> <span class="n">df_best</span> <span class="o">=</span> <span class="n">tsgp</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">tsgp</span></code> returns four objects:</p>
+<p><code class="docutils literal notranslate"><span class="pre">tsgp</span></code> returns two objects:</p>
 <ol class="arabic simple">
-<li><p>Input matrix <code class="docutils literal notranslate"><span class="pre">X</span></code></p></li>
-<li><p>Class label vector <code class="docutils literal notranslate"><span class="pre">y</span></code></p></li>
 <li><p>Data frame containing all time-average features across all generations and their fitness scores</p></li>
 <li><p>Data frame containing the best individual time-average feature and its fitness score</p></li>
 </ol>
@@ -216,6 +216,7 @@
 <span class="gp">&gt;&gt;&gt; </span>     <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
 
 <span class="gp">&gt;&gt;&gt; </span> <span class="c1"># AR(1) samples</span>
+
 <span class="gp">&gt;&gt;&gt; </span> <span class="n">ar1_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">T</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
 <span class="gp">&gt;&gt;&gt; </span>     <span class="n">noise</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
@@ -226,6 +227,7 @@
 <span class="gp">&gt;&gt;&gt; </span>     <span class="n">ar1_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">ar1</span>
 
 <span class="gp">&gt;&gt;&gt; </span> <span class="c1"># AR(2) samples</span>
+
 <span class="gp">&gt;&gt;&gt; </span> <span class="n">ar2_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">N</span><span class="p">,</span> <span class="n">T</span><span class="p">))</span>
 <span class="gp">&gt;&gt;&gt; </span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">N</span><span class="p">):</span>
 <span class="gp">&gt;&gt;&gt; </span>     <span class="n">noise</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">T</span><span class="p">)</span>
@@ -237,9 +239,11 @@
 <span class="gp">&gt;&gt;&gt; </span>     <span class="n">ar2_data</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">ar2</span>
 
 <span class="gp">&gt;&gt;&gt; </span> <span class="c1"># Gaussian noise samples</span>
+
 <span class="gp">&gt;&gt;&gt; </span> <span class="n">noise_data</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">normal</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">T</span><span class="p">))</span>
 
 <span class="gp">&gt;&gt;&gt; </span> <span class="c1"># Combine and label</span>
+
 <span class="gp">&gt;&gt;&gt; </span> <span class="n">X</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">([</span><span class="n">noise_data</span><span class="p">,</span> <span class="n">ar1_data</span><span class="p">,</span> <span class="n">ar2_data</span><span class="p">])</span>
 <span class="gp">&gt;&gt;&gt; </span> <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span> <span class="o">+</span> <span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span> <span class="o">+</span> <span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">*</span> <span class="n">N</span><span class="p">)</span>
 
@@ -256,6 +260,24 @@
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/noise-ar1-ar2.png"><img alt="Noise vs AR(1) vs AR(2) histogram on the best individual feature." src="_images/noise-ar1-ar2.png" style="width: 600px;" /></a>
+</section>
+<section id="additional-functionality">
+<h3>Additional functionality<a class="headerlink" href="#additional-functionality" title="Permalink to this heading"></a></h3>
+<p><code class="docutils literal notranslate"><span class="pre">timegpy</span></code> also contains a host of other functionality, such as the function <code class="docutils literal notranslate"><span class="pre">feature_tree</span></code> which prints ASCII-style tree representations of time-average features to the console:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; feature_tree(&quot;mean((X_t * X_t+1^3))&quot;)
+&gt;&gt;&gt;
+&gt;&gt;&gt; └── *
+&gt;&gt;&gt;  ├── X_t
+&gt;&gt;&gt;  └── ^
+&gt;&gt;&gt;      ├── X_t+1
+&gt;&gt;&gt;      └── 3
+</pre></div>
+</div>
+<p>And the ability to plot the Pareto front of all features found across all generations:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">plot_pareto</span><span class="p">(</span><span class="n">df_all</span><span class="p">,</span> <span class="n">df_best</span><span class="p">,</span> <span class="n">use_parsimony</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">level</span><span class="o">=</span><span class="mf">0.95</span><span class="p">)</span>
+</pre></div>
+</div>
+<a class="reference internal image-reference" href="_images/pareto-front.png"><img alt="Pareto front of all feature program sizes and adjusted fitness values." src="_images/pareto-front.png" style="width: 600px;" /></a>
 </section>
 </section>
 </section>

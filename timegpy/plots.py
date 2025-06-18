@@ -6,7 +6,7 @@ from .evaluate_expression import evaluate_expression
 
 def plot_hist(expr, X, y, bins=10):
     """
-    Plots a histogram of the feature (from best_info_df) by class, with vertical lines at class means.
+    Plots a histogram of a feature by class, with vertical lines at class means.
     
     Parameters:
     - expr: string representation of the time-average feature expression
@@ -15,23 +15,32 @@ def plot_hist(expr, X, y, bins=10):
     - bins: Number of histogram bins (default: 10)
     
     Returns:
-    - Matplotlib figure
+    - Matplotlib figure.
     """
+
+    #-------- Prepare data --------
+
     feature_values = evaluate_expression(expr, X)
 
     # Get class labels
+
     classes = np.unique(y)
     colors = plt.cm.get_cmap('viridis', len(classes))
 
+    #-------- Draw plot --------
+
     plt.figure(figsize=(10, 6))
+
     for idx, cls in enumerate(classes):
         cls_values = feature_values[y == cls]
         color = colors(idx)
 
-        # Histogram
-        plt.hist(cls_values, bins=bins, alpha=0.4, label=f"Class {cls}", color=color, edgecolor='black')
+        # Add histogram
 
-        # Vertical line for class mean
+        plt.hist(cls_values, bins=bins, alpha=0.5, label=f"Class {cls}", color=color, edgecolor='black')
+
+        # Add vertical lines for class mean
+
         cls_mean = np.mean(cls_values)
         plt.axvline(cls_mean, color=color, linestyle='--', linewidth=2, label=f"Mean Class {cls}")
 
@@ -43,36 +52,64 @@ def plot_hist(expr, X, y, bins=10):
     plt.tight_layout()
     return plt
 
-def plot_pareto(df_all, use_parsimony=True, jitter_strength=0.1):
+def plot_pareto(df_all, df_best, use_parsimony=True, level=0.95):
     """
-    Plots all programs as points in a Pareto frontier scatter plot.
+    Plots a ribbon of fitness percentiles and mean fitness per program size, with the best feature highlighted.
 
     Parameters:
-    - df_all: DataFrame from evolve_features() containing 'program_size' and fitness columns.
+    - df_all: DataFrame from tsgp() containing 'program_size' and fitness columns.
+    - df_best: DataFrame from tsgp() containing the best expression found.
     - use_parsimony: If True, plots 'fitness_parsimony'; else plots 'fitness'.
-    - jitter_strength: Float, controls how much horizontal jitter is applied (default: 0.2).
+    - level: Confidence level for the ribbon (e.g., 0.95 for a 95 per cent interval).
 
     Returns:
-    - Matplotlib figure object.
+    - Matplotlib figure.
     """
     metric_col = 'fitness_parsimony' if use_parsimony else 'fitness'
 
+    #-------- Prepare data --------
+
     # Drop NaNs
+
     df = df_all.dropna(subset=['program_size', metric_col])
 
-    # Jitter program size for visual clarity
-    x = df['program_size'] + np.random.uniform(-jitter_strength, jitter_strength, size=len(df))
-    y = df[metric_col]
+    # Calculate lower and upper percentiles based on the confidence level
 
-    # Plot
+    lower_pct = (1.0 - level) / 2 * 100
+    upper_pct = (1.0 + level) / 2 * 100
+
+    # Compute summary stats for each program size
+
+    summary = df.groupby('program_size')[metric_col].agg(
+        mean='mean',
+        lower=lambda x: np.percentile(x, lower_pct),
+        upper=lambda x: np.percentile(x, upper_pct)
+    ).reset_index()
+
+    #-------- Draw plot --------
+
     fig, ax = plt.subplots(figsize=(9, 6))
-    ax.scatter(x, y, alpha=0.6, edgecolor='k', linewidth=0.5)
-    ax.set_title("Pareto front of program size vs fitness", fontsize=14)
+
+    # Add interval as a ribbon
+
+    ax.fill_between(summary['program_size'], summary['lower'], summary['upper'],
+                    alpha=0.3, label=f'{int(level * 100)}% Interval', color='skyblue')
+
+    # Add mean line
+
+    ax.plot(summary['program_size'], summary['mean'], label='Mean Fitness', color='blue', linewidth=2)
+
+    # Add a point to signify best individual feature
+
+    best_size = df_best['program_size'].iloc[0]
+    best_fitness = df_best[metric_col].iloc[0]
+    ax.scatter([best_size], [best_fitness], color='red', s=80, marker='o', label='Best Feature', zorder=5)
+
+    ax.set_title("Pareto front: Program size vs fitness", fontsize=14)
     ax.set_xlabel("Program size", fontsize=12)
     ax.set_ylabel("Fitness (adjusted)" if use_parsimony else "Fitness", fontsize=12)
     ax.grid(True)
-
-    # Ensure x-axis ticks are integers
+    ax.legend()
     ax.xaxis.set_major_locator(MaxNLocator(integer=True))
 
     plt.tight_layout()
@@ -88,20 +125,25 @@ def plot_gen(df_all, use_parsimony=True):
     - use_parsimony: If True, plots 'fitness_parsimony'; else plots 'fitness'.
 
     Returns:
-    - Matplotlib figure
+    - Matplotlib figure.
     """
     metric_col = 'fitness_parsimony' if use_parsimony else 'fitness'
 
+    #-------- Prepare data --------
+
     # Drop NaNs
+
     df = df_all.dropna(subset=['generation', metric_col])
 
     # Group by generation
+
     grouped = df.groupby('generation')[metric_col]
     means = grouped.mean()
     stds = grouped.std()
     generations = means.index
 
-    # Plot
+    #-------- Draw plot --------
+
     fig, ax = plt.subplots(figsize=(10, 6))
     ax.errorbar(generations, means, yerr=stds, fmt='o-', capsize=5, linewidth=2, markersize=6)
 
@@ -111,6 +153,7 @@ def plot_gen(df_all, use_parsimony=True):
     ax.grid(True)
 
     # Ensure x-axis ticks are integers
+
     ax.xaxis.set_major_locator(MaxNLocator(integer=True))
 
     plt.tight_layout()

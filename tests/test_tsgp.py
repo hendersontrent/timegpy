@@ -32,4 +32,4 @@ X, y = generate_ar1_vs_noise(N=100, T=100, phi=0.8, seed=123)
 
 #----------------- Test core function -----------------
 
-X, y, df_all, df_best = tsgp(X, y)
+df_all, df_best = tsgp(X, y)

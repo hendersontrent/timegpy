@@ -50,7 +50,8 @@ This tutorial will walk through basic functionality of the package using a simul
 
    >>>      X = np.vstack([ar1_data, noise_data])
 
-   >>>      # Labels
+   >>>      # Class labels
+
    >>>      y = np.array([1] * N + [0] * N)
 
    >>>      return X, y
@@ -71,14 +72,12 @@ The core function in ``timegpy`` is ``tsgp`` ('time-series genetic programming')
 
 .. code::
    
-   >>> X, y, df_all, df_best = tsgp(X, y)
+   >>> df_all, df_best = tsgp(X, y)
 
-``tsgp`` returns four objects:
+``tsgp`` returns two objects:
 
-1. Input matrix ``X``
-2. Class label vector ``y``
-3. Data frame containing all time-average features across all generations and their fitness scores
-4. Data frame containing the best individual time-average feature and its fitness score
+1. Data frame containing all time-average features across all generations and their fitness scores
+2. Data frame containing the best individual time-average feature and its fitness score
 
 Despite the simplicity of the above call, it is highly likely that users will seek to adjust the numerous parameters to their task. Here is a breakdown of the available arguments:
 
@@ -161,6 +160,7 @@ Since the current fitness metric is an (adjusted) :math:`\eta^{2}` from an ANOVA
    >>>      np.random.seed(seed)
 
    >>>  # AR(1) samples
+
    >>>  ar1_data = np.zeros((N, T))
    >>>  for i in range(N):
    >>>      noise = np.random.normal(0, 1, T)
@@ -171,6 +171,7 @@ Since the current fitness metric is an (adjusted) :math:`\eta^{2}` from an ANOVA
    >>>      ar1_data[i] = ar1
 
    >>>  # AR(2) samples
+
    >>>  ar2_data = np.zeros((N, T))
    >>>  for i in range(N):
    >>>      noise = np.random.normal(0, 1, T)
@@ -182,9 +183,11 @@ Since the current fitness metric is an (adjusted) :math:`\eta^{2}` from an ANOVA
    >>>      ar2_data[i] = ar2
 
    >>>  # Gaussian noise samples
+
    >>>  noise_data = np.random.normal(0, 1, (N, T))
 
    >>>  # Combine and label
+
    >>>  X = np.vstack([noise_data, ar1_data, ar2_data])
    >>>  y = np.array([0] * N + [1] * N + [2] * N)
 
@@ -204,3 +207,28 @@ We can now easily visualise the best performing feature and how each class is di
 .. image:: images/noise-ar1-ar2.png
   :width: 600
   :alt: Noise vs AR(1) vs AR(2) histogram on the best individual feature.
+
+Additional functionality
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+``timegpy`` also contains a host of other functionality, such as the function ``feature_tree`` which prints ASCII-style tree representations of time-average features to the console:
+
+.. code::
+   
+   >>> feature_tree("mean((X_t * X_t+1^3))")
+   >>>
+   >>> └── *
+   >>>  ├── X_t
+   >>>  └── ^
+   >>>      ├── X_t+1
+   >>>      └── 3
+
+And the ability to plot the Pareto front of all features found across all generations:
+
+.. code::
+   
+   >>> plot_pareto(df_all, df_best, use_parsimony=True, level=0.95)
+
+.. image:: images/pareto-front.png
+  :width: 600
+  :alt: Pareto front of all feature program sizes and adjusted fitness values.

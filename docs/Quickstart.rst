@@ -129,15 +129,15 @@ Additional graphical tools
 
 Intuitively, we see the Gaussian noise time series distributed around a feature value of :math:`0` and the AR(1) data (Class 1) distributed around :math:`0.8`---which we know to be the autoregressive coefficient we used to generate the data. This, combined with the fact that ``"X_t+0 * X_t+1"`` was found to be the best time-average feature for classifying the time series, solidifies that the algorithm is working as expected.
 
-There are also plotting options for the Pareto front (``plot_pareto``) as well as average fitness by generation (``plot_gen``). The latter looks like this:
+There is also the ability to plot the Pareto front of all features found across all generations:
 
 .. code::
    
-   >>> plot_gen(df_all, use_parsimony=True)
+   >>> plot_pareto(df_all, df_best, use_parsimony=True, level=0.95)
 
-.. image:: images/fitness-plot.png
+.. image:: images/pareto-front.png
   :width: 600
-  :alt: Average fitness by generation.
+  :alt: Pareto front of all feature program sizes and adjusted fitness values.
 
 Evaluating individual time-average feature expressions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -222,13 +222,3 @@ Additional functionality
    >>>  └── ^
    >>>      ├── X_t+1
    >>>      └── 3
-
-And the ability to plot the Pareto front of all features found across all generations:
-
-.. code::
-   
-   >>> plot_pareto(df_all, df_best, use_parsimony=True, level=0.95)
-
-.. image:: images/pareto-front.png
-  :width: 600
-  :alt: Pareto front of all feature program sizes and adjusted fitness values.

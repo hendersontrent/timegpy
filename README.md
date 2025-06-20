@@ -76,7 +76,7 @@ You can then easily visualise results using the built-in plotting functions. Her
 
 ```python
 expression = df_best.iloc[0]['expression']
-plot_hist(expression, X, y)
+plot_hist(expression, X, y, z_score=True)
 ```
 
 <img src="img/ar1-plot.png" align="center" width="600" />
@@ -104,6 +104,8 @@ plot_pareto(df_all, df_best, use_parsimony=True, level=0.95)
 ```
 
 <img src="img/pareto-front.png" align="center" width="600" />
+
+*NOTE: Negative fitness values are permitted in the current implementation of `timegpy` if parsimony is used. This is because the current fitness statistic is in the domain* $[0,1]$ *meaning that complex time-average features that perform poorly are penalised.*
 
 ## Computational efficiency
 

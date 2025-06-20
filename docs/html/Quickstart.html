@@ -190,7 +190,7 @@
 <h3>Additional graphical tools<a class="headerlink" href="#additional-graphical-tools" title="Permalink to this heading"></a></h3>
 <p><code class="docutils literal notranslate"><span class="pre">timegpy</span></code> also contains functionality for interpreting and visualising genetic programming outputs. For example, users may seek to visualise class separation according to the best time-average feature (or any other). The convenience function <code class="docutils literal notranslate"><span class="pre">plot_hist</span></code> has been included for this purpose. It only requires a time-average feature expression as a string (using the conventions of <code class="docutils literal notranslate"><span class="pre">timegpy</span></code>), the input data <code class="docutils literal notranslate"><span class="pre">X</span></code>, and the class label vector <code class="docutils literal notranslate"><span class="pre">y</span></code>. Here is an example using the best found expression from the above example:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">expression</span> <span class="o">=</span> <span class="n">df_best</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;expression&#39;</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plot_hist</span><span class="p">(</span><span class="n">expression</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plot_hist</span><span class="p">(</span><span class="n">expression</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z_score</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/ar1-plot.png"><img alt="Noise vs AR(1) histogram on the best individual feature." src="_images/ar1-plot.png" style="width: 600px;" /></a>
@@ -204,7 +204,7 @@
 <section id="evaluating-individual-time-average-feature-expressions">
 <h3>Evaluating individual time-average feature expressions<a class="headerlink" href="#evaluating-individual-time-average-feature-expressions" title="Permalink to this heading"></a></h3>
 <p>Outside of the core genetic programming algorithm contained in <code class="docutils literal notranslate"><span class="pre">tsgp</span></code>, <code class="docutils literal notranslate"><span class="pre">timegpy</span></code> can also calculate time-average feature values for any given string representation of an expression and the input matrix:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">feature_values</span> <span class="o">=</span> <span class="n">evaluate_expression</span><span class="p">(</span><span class="s2">&quot;mean((X_t+0 * X_t+1))&quot;</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">feature_values</span> <span class="o">=</span> <span class="n">evaluate_expression</span><span class="p">(</span><span class="s2">&quot;mean((X_t+0 * X_t+1))&quot;</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">z_score</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
@@ -256,7 +256,7 @@
 </div>
 <p>We can now easily visualise the best performing feature and how each class is distributed on it:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">expression2</span> <span class="o">=</span> <span class="n">df_best2</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;expression&#39;</span><span class="p">]</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="n">plot_hist</span><span class="p">(</span><span class="n">expression2</span><span class="p">,</span> <span class="n">X2</span><span class="p">,</span> <span class="n">y2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">plot_hist</span><span class="p">(</span><span class="n">expression2</span><span class="p">,</span> <span class="n">X2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">z_score</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 <a class="reference internal image-reference" href="_images/noise-ar1-ar2.png"><img alt="Noise vs AR(1) vs AR(2) histogram on the best individual feature." src="_images/noise-ar1-ar2.png" style="width: 600px;" /></a>

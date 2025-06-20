@@ -121,7 +121,7 @@ Additional graphical tools
 .. code::
    
    >>> expression = df_best.iloc[0]['expression']
-   >>> plot_hist(expression, X, y)
+   >>> plot_hist(expression, X, y, z_score=True)
 
 .. image:: images/ar1-plot.png
   :width: 600
@@ -146,7 +146,7 @@ Outside of the core genetic programming algorithm contained in ``tsgp``, ``timeg
 
 .. code::
    
-   >>> feature_values = evaluate_expression("mean((X_t+0 * X_t+1))", X)
+   >>> feature_values = evaluate_expression("mean((X_t+0 * X_t+1))", X, z_score=True)
 
 Multiclass problems
 ^^^^^^^^^^^^^^^^^^^
@@ -202,7 +202,7 @@ We can now easily visualise the best performing feature and how each class is di
 .. code::
    
    >>> expression2 = df_best2.iloc[0]['expression']
-   >>> plot_hist(expression2, X2, y2)
+   >>> plot_hist(expression2, X2, y2, z_score=True)
 
 .. image:: images/noise-ar1-ar2.png
   :width: 600

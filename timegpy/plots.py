@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
 from .evaluate_expression import evaluate_expression
 
-def plot_hist(expr, X, y, bins=10):
+def plot_hist(expr, X, y, bins=10, z_score=True):
     """
     Plots a histogram of a feature by class, with vertical lines at class means.
     
@@ -12,7 +12,8 @@ def plot_hist(expr, X, y, bins=10):
     - expr: string representation of the time-average feature expression
     - X: 2D numpy array of shape (n_samples, n_timepoints)
     - y: array-like of class labels
-    - bins: Number of histogram bins (default: 10)
+    - bins: number of histogram bins (default: 10)
+    - z_score: whether to z-score input data X. Defaults to True
     
     Returns:
     - Matplotlib figure.
@@ -20,7 +21,7 @@ def plot_hist(expr, X, y, bins=10):
 
     #-------- Prepare data --------
 
-    feature_values = evaluate_expression(expr, X)
+    feature_values = evaluate_expression(expr, X, z_score=z_score)
 
     # Get class labels
 

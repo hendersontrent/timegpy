@@ -65,7 +65,7 @@ def tsgp(
         p_const (int): probability of a given leaf node being a constant versus a time lag. Defaults to 0.1
         seed (int): fixes Python's random seed for reproducibility. Defaults to 123
         n_generation_improve (int): number of generations of no fitness improvement before algorithm terminates early. Defaults to 1
-        z_score (bool): whether to z-score input data X. Defaults to True,
+        z_score (bool): whether to z-score input data X. Defaults to True
         n_procs (int): number of processes to use if parallel processing is desired. Defaults to 1 for serial processing
 
     Returns:
@@ -112,16 +112,6 @@ def tsgp(
         if not selected:
             return deepcopy(random.choice(pop))
         return deepcopy(max(selected, key=lambda x: x[1])[0])
-
-    #def evaluate_program(program, X, y):
-    #    try:
-    #        feature = evaluate_tree(program, X)
-    #        if feature is None or np.isnan(feature).all():
-    #            return np.nan, calculate_program_size(program)
-    #        fitness = compute_eta_squared(feature, y)
-    #        return fitness, calculate_program_size(program)
-    #    except Exception:
-    #        return np.nan, calculate_program_size(program)
         
     #------------- Run main algorithm --------------
 
@@ -150,9 +140,9 @@ def tsgp(
         
         if n_procs > 1:
             with Pool(processes=n_procs) as pool:
-                results = pool.map(partial(evaluate_program, X=X, y=y), population)
+                results = pool.map(partial(evaluate_program, X=X, y=y, z_score=False), population) # Already upfront z-scored
         else:
-            results = [evaluate_program(prog, X, y) for prog in population]
+            results = [evaluate_program(prog, X, y, z_score=False) for prog in population] # Already upfront z-scored
 
         fitness_scores, program_sizes = zip(*results)
 

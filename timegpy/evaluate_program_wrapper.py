@@ -3,9 +3,9 @@ from .evaluate_tree import evaluate_tree
 from .fitness import compute_eta_squared
 from .calculate_program_size import calculate_program_size
 
-def evaluate_program(program, X, y):
+def evaluate_program(program, X, y, z_score=True):
     try:
-        feature = evaluate_tree(program, X)
+        feature = evaluate_tree(program, X, z_score=z_score)
         if feature is None or np.isnan(feature).all():
             return np.nan, calculate_program_size(program)
         fitness = compute_eta_squared(feature, y)

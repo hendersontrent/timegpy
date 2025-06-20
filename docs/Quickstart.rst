@@ -195,7 +195,7 @@ Since the current fitness metric is an (adjusted) :math:`\eta^{2}` from an ANOVA
 
    >>> X2, y2 = generate_noise_vs_ar1_vs_ar2(N=100, T=100, phi1=0.8, phi2=0.5, phi3=0.3, seed=123)
 
-   >>> X2, y2, df_all2, df_best2 = tsgp(X2, y2)
+   >>> df_all2, df_best2 = tsgp(X2, y2, n_procs=4)
 
 We can now easily visualise the best performing feature and how each class is distributed on it:
 

@@ -10,7 +10,7 @@ def strip_mean(expr: str) -> str:
     return expr
 
 def tokenize(expr: str):
-    TOKEN_REGEX = r'X_t(?:[\+\-]\d+)?|\d+(?:\.\d+)?|\^|[\+\-\*/()]'
+    TOKEN_REGEX = r'sin|cos|tan|X_t(?:[\+\-]\d+)?|\d+(?:\.\d+)?|\^|[\+\-\*/()]'
     return re.findall(TOKEN_REGEX, expr.replace(' ', ''))
 
 class Parser:
@@ -44,6 +44,15 @@ class Parser:
 
     def parse_term(self):
         tok = self.peek()
+        if tok in ('sin', 'cos', 'tan'):
+            self.consume()
+            if self.consume() != '(':
+                raise ValueError("Expected '(' after unary operator")
+            child = self.parse_expression()
+            if self.consume() != ')':
+                raise ValueError("Expected ')' after unary operator argument")
+            return Node(op=tok, left=child)
+        
         if tok == '(':
             self.consume()
             node = self.parse_expression()
@@ -79,10 +88,16 @@ def feature_tree(expr: str):
             return
 
         prefix = indent + ("├── " if is_left else "└── ")
+
         if node.is_operator():
-            print(prefix + node.op)
-            _print_tree(node.left, indent + ("│   " if is_left else "    "), True)
-            _print_tree(node.right, indent + ("│   " if is_left else "    "), False)
+            if node.op in ('sin', 'cos', 'tan'):
+                print(prefix + node.op)
+                _print_tree(node.left, indent + ("│   " if is_left else "    "), True)
+            else:
+                print(prefix + node.op)
+                _print_tree(node.left, indent + ("│   " if is_left else "    "), True)
+                _print_tree(node.right, indent + ("│   " if is_left else "    "), False)
+
         elif node.is_lag_term():
             label = f"X_t{node.lag:+}" if node.lag != 0 else "X_t"
             if node.exponent is not None:
@@ -91,6 +106,7 @@ def feature_tree(expr: str):
                 _print_tree(Node(value=node.exponent), indent + ("│   " if is_left else "    "), False)
             else:
                 print(prefix + label)
+
         elif node.is_constant():
             print(prefix + str(node.value))
 
@@ -100,16 +116,19 @@ def feature_tree(expr: str):
 #---------------- Tree to string -----------------
 
 def tree_to_expression(node):
-    if node.is_operator():
+    if node.is_binary_operator():
         left_str = tree_to_expression(node.left)
         right_str = tree_to_expression(node.right)
         return f"({left_str} {node.op} {right_str})"
+    elif node.is_unary_operator():
+        child_str = tree_to_expression(node.left)
+        return f"{node.op}({child_str})"
     elif node.is_constant():
         return f"{node.value:.4f}"
     elif node.is_lag_term():
         base = f"X_t+{node.lag}"
         if node.exponent is not None:
-            return f"({base}**{node.exponent})"
+            return f"({base} ^ {node.exponent})"
         else:
             return base
     else:

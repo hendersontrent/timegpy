@@ -5,15 +5,18 @@ from .generate_random_tree import generate_random_tree
 from .get_all_nodes import get_all_nodes
 from .replace_node import replace_node
 
-def point_mutation(tree, max_lag, max_exponent, const_range=(-1.0, 1.0)):
+def point_mutation(tree, max_lag, max_exponent, const_range=(-1.0, 1.0), unary_set=['sin', 'cos', 'tan']):
     """
-    Mutates a single node in the tree. If const_range is None, no constant mutations occur.
+    Mutates a single node in the tree. Handles constants, lag terms, binary operators, and unary operators.
     """
     all_nodes = get_all_nodes(tree)
     node = random.choice(all_nodes)
 
-    if node.is_operator():
+    if node.is_binary_operator():
         node.op = random.choice(['+', '-', '*', '/'])
+
+    elif node.is_unary_operator():
+        node.op = random.choice(unary_set)
 
     elif node.is_lag_term():
         if node.lag != 0:
@@ -29,7 +32,8 @@ def point_mutation(tree, max_lag, max_exponent, const_range=(-1.0, 1.0)):
     return tree
 
 def subtree_mutation(tree: Node, max_lag_terms=4, prob_exponent=0.3, max_lag=5,
-                     max_exponent=4, const_range=(-1.0, 1.0), p_const=0.3) -> Node:
+                     max_exponent=4, const_range=(-1.0, 1.0), p_const=0.3,
+                     p_unary=0.1, unary_set=['sin', 'cos', 'tan']) -> Node:
     """
     Perform subtree mutation by replacing a randomly chosen subtree with a new randomly generated one.
 
@@ -41,21 +45,24 @@ def subtree_mutation(tree: Node, max_lag_terms=4, prob_exponent=0.3, max_lag=5,
     - max_exponent: Maximum exponent value.
     - const_range: Tuple (low, high) or None to control float constant inclusion.
     - p_const: Probability of using a constant node vs a lag node in leaves.
+    - p_unary: Probability a leaf is a unary trigonometric function applied to a lag.
+    - unary_set: List of allowed unary functions. If None, disables unary terms.
     """
     tree = deepcopy(tree)
     nodes = get_all_nodes(tree, include_root=True)
     target = random.choice(nodes)
 
-    # Generate new subtree
     subtree_lag_terms = random.randint(2, min(max_lag_terms, 4))
     new_subtree = generate_random_tree(
-        max_depth=subtree_lag_terms,
+        max_lag_terms=subtree_lag_terms,
         prob_exponent=prob_exponent,
         max_lag=max_lag,
         max_exponent=max_exponent,
         force_X_t=True,
         const_range=const_range,
-        p_const=p_const
+        p_const=p_const,
+        p_unary=p_unary,
+        unary_set=unary_set
     )
 
     if target is tree:

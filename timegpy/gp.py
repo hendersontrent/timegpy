@@ -30,11 +30,13 @@ def tsgp(
     auto_parsimony=True,
     parsimony_coefficient=0.001,
     verbose=False,
-    max_depth=8,
+    max_lag_terms=8,
     max_lag=8,
     max_exponent=5,
     const_range=(-1.0, 1.0),
     p_const=0.1,
+    p_unary=0.1,
+    unary_set=['sin', 'cos', 'tan'],
     seed=123,
     n_generation_improve=2,
     z_score=True,
@@ -42,6 +44,7 @@ def tsgp(
 ):
     """
     Evolve a genetic programming algorithm to find informative time-average features for time-series classification.
+
     Args:
         X (array): ID by time matrix containing time-series data
         y (array): vector of class labels for each row of X
@@ -58,62 +61,54 @@ def tsgp(
         auto_parsimony (bool): whether to calculate generational parsimony coefficients dynamically. Defaults to True
         parsimony_coefficient (float): if auto_parsimony = False, this static coefficient for parsimony will be applied to all generations. Defaults to 0.001
         verbose (bool): whether to print updates of algorithm progress. Defaults to False
-        max_depth (int): maximum number of time-lag terms allowed in a single feature expression. Defaults to 8
+        max_lag_terms (int): maximum number of lag/constant terms allowed in a single feature expression. Defaults to 8
         max_lag (int): maximum time-lag allowed in a single feature expression. Defaults to 8
         max_exponent (int): maximum exponent allowed. Defaults to 5
         const_range (tuple): either a tuple of floats for the range of values a constant term can take, or None for no constants. Defaults to (-1.0, 1.0)
         p_const (int): probability of a given leaf node being a constant versus a time lag. Defaults to 0.1
+        p_unary (float): probability of applying a unary trigonometric operator to a term. Defaults to 0.1
+        unary_set (list): allowed unary operators. Defaults to ['sin', 'cos', 'tan']
         seed (int): fixes Python's random seed for reproducibility. Defaults to 123
         n_generation_improve (int): number of generations of no fitness improvement before algorithm terminates early. Defaults to 1
         z_score (bool): whether to z-score input data X. Defaults to True
         n_procs (int): number of processes to use if parallel processing is desired. Defaults to 1 for serial processing
 
     Returns:
-        Data frame of fitness results for every generation and a data frame of the best individual time-average feature for easy identification
+        DataFrame of fitness results for every generation and a DataFrame of the best individual time-average feature for easy identification
     """
-
-    #------------- Check essential inputs --------------
-
-    # Validate probabilities sum
 
     total_mutation_prob = p_point_mutation + p_subtree_mutation + p_hoist_mutation + p_crossover
     if total_mutation_prob >= 1.0:
-        raise ValueError("The sum of p_point_mutation, p_subtree_mutation, p_hoist_mutation, and p_crossover must be less than 1.")
-
-    # Validate parsimony coefficient
+        raise ValueError("The sum of mutation and crossover probabilities must be less than 1.")
 
     if not (0 < parsimony_coefficient < 1):
         raise ValueError("parsimony_coefficient must be between 0 and 1.")
 
-    # Validate constant probability
-
     if not (0 < p_const < 1):
         raise ValueError("p_const must be between 0 and 1.")
-
-    # Validate fitness threshold
 
     if not (0 < fitness_threshold <= 1):
         raise ValueError("fitness_threshold must be between 0 (exclusive) and 1 (inclusive).")
 
-    # Validate tournament size
-
     if tournament_size >= pop_size:
         raise ValueError("tournament_size must be smaller than pop_size.")
-    
-    #------------- Define helper functions --------------
-    
+
+    if unary_set is None or len(unary_set) == 0:
+        p_unary = 0.0
+    else:
+        allowed_unary = {'sin', 'cos', 'tan'}
+        if not set(unary_set).issubset(allowed_unary):
+            raise ValueError("unary_set can only contain 'sin', 'cos', 'tan'")
+
     def tournament_selection(pop, fitnesses, exclude_idx=None):
         indices = list(range(len(pop)))
         if exclude_idx is not None:
             indices.remove(exclude_idx)
-
         tournament_indices = random.sample(indices, min(tournament_size, len(indices)))
         selected = [(pop[i], fitnesses[i]) for i in tournament_indices if not np.isnan(fitnesses[i])]
         if not selected:
             return deepcopy(random.choice(pop))
         return deepcopy(max(selected, key=lambda x: x[1])[0])
-        
-    #------------- Run main algorithm --------------
 
     random.seed(seed)
     generation_data = []
@@ -125,31 +120,34 @@ def tsgp(
 
     population = [
         generate_random_tree(
-            max_depth=max_depth,
+            max_lag_terms=max_lag_terms,
             prob_exponent=p_exponent,
             max_lag=max_lag,
             max_exponent=max_exponent,
             const_range=const_range,
             p_const=p_const,
+            p_unary=p_unary,
+            unary_set=unary_set,
             force_X_t=True
         ) for _ in range(pop_size)
     ]
 
     for gen in range(n_generations):
         print(f"Evolving generation {gen}")
-        
+
         if n_procs > 1:
             with Pool(processes=n_procs) as pool:
-                results = pool.map(partial(evaluate_program, X=X, y=y, z_score=False), population) # Already upfront z-scored
+                results = pool.map(partial(evaluate_program, X=X, y=y, z_score=False), population)
         else:
-            results = [evaluate_program(prog, X, y, z_score=False) for prog in population] # Already upfront z-scored
+            results = [evaluate_program(prog, X, y, z_score=False) for prog in population]
 
         fitness_scores, program_sizes = zip(*results)
+        #print(fitness_scores)
 
         if use_parsimony:
             clean_data = [(f, s, p) for f, s, p in zip(fitness_scores, program_sizes, population) if not np.isnan(f)]
             if not clean_data:
-                break  # All fitnesses are NaN, abort
+                break
             clean_fitness, clean_sizes, clean_programs = zip(*clean_data)
             fitness_np = np.array(clean_fitness, dtype=float)
             sizes_np = np.array(clean_sizes, dtype=float)
@@ -200,7 +198,6 @@ def tsgp(
                 print("Stopping early: no improvement in best fitness.")
             break
 
-        # Mutation & crossover operations
         remaining_prob = 1.0 - (p_point_mutation + p_subtree_mutation + p_hoist_mutation + p_crossover)
         operations = ['point', 'subtree', 'hoist', 'crossover', 'clone']
         weights = [p_point_mutation, p_subtree_mutation, p_hoist_mutation, p_crossover, remaining_prob]
@@ -216,12 +213,14 @@ def tsgp(
             elif operation == 'subtree':
                 child = subtree_mutation(
                     parent1,
-                    max_lag_terms=max_depth,
+                    max_lag_terms=max_lag_terms,
                     prob_exponent=p_exponent,
                     max_lag=max_lag,
                     max_exponent=max_exponent,
                     const_range=const_range,
-                    p_const=p_const
+                    p_const=p_const,
+                    p_unary=p_unary,
+                    unary_set=unary_set
                 )
             elif operation == 'hoist':
                 child = hoist_mutation(parent1)
@@ -240,7 +239,6 @@ def tsgp(
         population = new_population
 
     df_all = pd.DataFrame(generation_data)
-
     best_value = df_all['fitness_parsimony'].max() if use_parsimony else df_all['fitness'].max()
     best_candidates = df_all[df_all['fitness_parsimony' if use_parsimony else 'fitness'] == best_value]
     best_info = best_candidates.sort_values(by=['generation', 'individual']).iloc[[0]].copy()

@@ -3,14 +3,13 @@ import pandas as pd
 import pingouin as pg
 
 def compute_eta_squared(feature_vector, y):
-    """
-    Computes partial eta squared using Pingouin's ANOVA implementation.
-    """
 
-    # Ensure input is 1D
+    # Ensure input is 1D vector
+
     feature_vector = np.ravel(feature_vector)
 
     # Remove NaNs and non-finite values
+
     finite_mask = np.isfinite(feature_vector)
     X_clean = feature_vector[finite_mask]
     y_clean = y[finite_mask]

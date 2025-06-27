@@ -4,9 +4,7 @@ from .classes import Node
 def generate_random_tree(max_lag_terms, prob_exponent=0.3, max_lag=5, max_exponent=4,
                          force_X_t=True, const_range=(-1.0, 1.0), p_const=0.1,
                          p_unary=0.1, unary_set=['sin', 'cos', 'tan']):
-    """
-    Generate a random expression tree with support for trigonometric functions, limiting number of lag/constant terms.
-    """
+    
     assert max_lag_terms >= 1, "max_lag_terms must be at least 1"
     assert 0 <= p_const <= 1, "p_const must be between 0 and 1"
     assert 0 <= p_unary <= 1, "p_unary must be between 0 and 1"
@@ -50,7 +48,8 @@ def generate_random_tree(max_lag_terms, prob_exponent=0.3, max_lag=5, max_expone
     random.shuffle(other_terms)
     leaves.extend(other_terms)
 
-    # Randomly apply unary ops to some leaves
+    # Randomly apply unary ops to some leaves if possible
+
     final_leaves = []
     for term in leaves:
         if random.random() < p_unary:

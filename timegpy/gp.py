@@ -74,8 +74,10 @@ def tsgp(
         n_procs (int): number of processes to use if parallel processing is desired. Defaults to 1 for serial processing
 
     Returns:
-        DataFrame of fitness results for every generation and a DataFrame of the best individual time-average feature for easy identification
+        Data frame of fitness results for every generation and a data frame of the best individual time-average feature for easy identification
     """
+
+    #------------- Check arguments -------------
 
     total_mutation_prob = p_point_mutation + p_subtree_mutation + p_hoist_mutation + p_crossover
     if total_mutation_prob >= 1.0:
@@ -99,6 +101,8 @@ def tsgp(
         allowed_unary = {'sin', 'cos', 'tan'}
         if not set(unary_set).issubset(allowed_unary):
             raise ValueError("unary_set can only contain 'sin', 'cos', 'tan'")
+        
+    #------------- Define functions -------------
 
     def tournament_selection(pop, fitnesses, exclude_idx=None):
         indices = list(range(len(pop)))
@@ -109,6 +113,8 @@ def tsgp(
         if not selected:
             return deepcopy(random.choice(pop))
         return deepcopy(max(selected, key=lambda x: x[1])[0])
+    
+    #------------- Run core algorithm -------------
 
     random.seed(seed)
     generation_data = []

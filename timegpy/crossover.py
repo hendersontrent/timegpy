@@ -15,7 +15,8 @@ def crossover(parent1: Node, parent2: Node) -> Node:
     crossover_point1 = random.choice(nodes1)
     crossover_point2 = random.choice(nodes2)
 
-    # Safety: ensure child retains X_t
+    # Mnsure child retains X_t term to be a time-average feature
+
     def has_X_t(node):
         if node.op is None and node.lag == 0:
             return True
@@ -26,7 +27,6 @@ def crossover(parent1: Node, parent2: Node) -> Node:
         return False
 
     def count_X_t(node):
-        """Count the number of X_t (lag==0) nodes."""
         count = 0
         def recurse(n):
             nonlocal count
@@ -36,19 +36,22 @@ def crossover(parent1: Node, parent2: Node) -> Node:
                 recurse(n.left)
             if n.right:
                 recurse(n.right)
-        recurse(node)  # ← this was the bug: changed from recurse(n) to recurse(node)
+        recurse(node)
         return count
 
     # If crossover_point1 is the only X_t node in parent1, protect it
+
     if crossover_point1.op is None and crossover_point1.lag == 0:
         if count_X_t(p1) == 1:
-            return p1  # Abandon crossover to preserve X_t
+            return p1
 
     # Perform crossover
+
     child = deepcopy(p1)
     replace_node(child, crossover_point1, deepcopy(crossover_point2))
 
-    # Final check: ensure child still has X_t
+    # Ensure child still has X_t term
+
     if not has_X_t(child):
         return p1  # Fallback to original parent
 

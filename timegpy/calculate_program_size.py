@@ -10,5 +10,5 @@ def calculate_program_size(node):
         return 1 + exponent_count  # 1 for the lag or constant, plus optional exponent
     
     else:
-        return 0  # Defensive: should not happen if tree is well-formed
+        return 0  # Should not happen if tree is well-formed
 

@@ -6,9 +6,6 @@ from .get_all_nodes import get_all_nodes
 from .replace_node import replace_node
 
 def point_mutation(tree, max_lag, max_exponent, const_range=(-1.0, 1.0), unary_set=['sin', 'cos', 'tan']):
-    """
-    Mutates a single node in the tree. Handles constants, lag terms, binary operators, and unary operators.
-    """
     all_nodes = get_all_nodes(tree)
     node = random.choice(all_nodes)
 
@@ -34,20 +31,6 @@ def point_mutation(tree, max_lag, max_exponent, const_range=(-1.0, 1.0), unary_s
 def subtree_mutation(tree: Node, max_lag_terms=4, prob_exponent=0.3, max_lag=5,
                      max_exponent=4, const_range=(-1.0, 1.0), p_const=0.3,
                      p_unary=0.1, unary_set=['sin', 'cos', 'tan']) -> Node:
-    """
-    Perform subtree mutation by replacing a randomly chosen subtree with a new randomly generated one.
-
-    Parameters:
-    - tree: The original expression tree.
-    - max_lag_terms: Max number of lag/constant terms for the new subtree.
-    - prob_exponent: Probability to include exponent on lag nodes.
-    - max_lag: Maximum time lag.
-    - max_exponent: Maximum exponent value.
-    - const_range: Tuple (low, high) or None to control float constant inclusion.
-    - p_const: Probability of using a constant node vs a lag node in leaves.
-    - p_unary: Probability a leaf is a unary trigonometric function applied to a lag.
-    - unary_set: List of allowed unary functions. If None, disables unary terms.
-    """
     tree = deepcopy(tree)
     nodes = get_all_nodes(tree, include_root=True)
     target = random.choice(nodes)
@@ -76,7 +59,6 @@ def hoist_mutation(tree: Node) -> Node:
     tree = deepcopy(tree)
 
     def collect_subtrees(node):
-        """Collects all subtrees (excluding root) that don't remove X_t."""
         subtrees = []
         def recurse(n):
             if n.left:
@@ -89,7 +71,6 @@ def hoist_mutation(tree: Node) -> Node:
         return subtrees
 
     def count_lag_nodes(node):
-        """Counts how many unique lag nodes exist (including X_t)."""
         lags = set()
         def recurse(n):
             if n.op is None:
@@ -104,7 +85,7 @@ def hoist_mutation(tree: Node) -> Node:
     original_lags = count_lag_nodes(tree)
 
     if len(original_lags) <= 2:
-        return tree  # Don't mutate if only 2 lag values (to keep X_t + something)
+        return tree  # Don't mutate if only 2 lag values (to keep X_t + something for a valid time-average feature)
 
     candidates = collect_subtrees(tree)
     random.shuffle(candidates)
@@ -115,4 +96,5 @@ def hoist_mutation(tree: Node) -> Node:
             return candidate  # Valid hoist mutation
 
     # If no valid subtree found, return original
+    
     return tree

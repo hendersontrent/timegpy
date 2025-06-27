@@ -1,17 +1,6 @@
 class Node:
     def __init__(self, op=None, left=None, right=None, lag=None, exponent=None, value=None):
-        """
-        Represents a node in a symbolic expression tree.
-
-        Parameters:
-        - op: Operator as string ('+', '-', '*', '/', or None)
-        - left: Left child Node
-        - right: Right child Node
-        - lag: Integer time lag (if applicable)
-        - exponent: Optional exponent applied to lag term
-        - value: Float constant (only used if lag is None and op is None)
-        """
-        self.op = op                # '+', '-', '*', '/', or None
+        self.op = op                # '+', '-', '*', '/', 'sin', 'cos', 'tan', or None
         self.left = left            # Node or None
         self.right = right          # Node or None
         self.lag = lag              # int or None
@@ -24,5 +13,8 @@ class Node:
     def is_lag_term(self):
         return self.op is None and self.lag is not None
 
-    def is_operator(self):
-        return self.op is not None
+    def is_binary_operator(self):
+        return self.op in ('+', '-', '*', '/')
+
+    def is_unary_operator(self):
+        return self.op in ('sin', 'cos', 'tan')

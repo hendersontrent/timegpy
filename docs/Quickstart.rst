@@ -96,9 +96,13 @@ Despite the simplicity of the above call, it is highly likely that users will se
 * ``auto_parsimony`` (bool): whether to calculate generational parsimony coefficients dynamically. Defaults to ``True``
 * ``parsimony_coefficient`` (float): if ``auto_parsimony = False``, this static coefficient for parsimony will be applied to all generations. Defaults to ``0.001``
 * ``verbose`` (bool): whether to print updates of algorithm progress. Defaults to ``False``
-* ``max_depth`` (int): maximum number of time-lag terms allowed in a single feature expression. Defaults to ``8``
+* ``max_lag_terms`` (int): maximum number of time-lag terms allowed in a single feature expression. Defaults to ``8``
 * ``max_lag`` (int): maximum time-lag allowed in a single feature expression. Defaults to ``8``
 * ``max_exponent`` (int): maximum exponent allowed. Defaults to ``5``
+* ``const_range`` (tuple): either a tuple of floats for the range of values a constant term can take, or None for no constants. Defaults to (-1.0, 1.0)
+* ``p_const`` (int): probability of a given leaf node being a constant versus a time lag. Defaults to ``0.1``
+* ``p_unary`` (float): probability of applying a unary trigonometric operator to a term. Defaults to ``0.1``
+* ``unary_set`` (list): allowed unary operators. Defaults to ``['sin', 'cos', 'tan']``. Can be ``None`` for no trigonometric operations
 * ``seed`` (int): fixes Python's random seed for reproducibility. Defaults to ``123``
 * ``n_generation_improve`` (int): number of generations of no fitness improvement before algorithm terminates early. Defaults to ``1``
 * ``z_score`` (bool): whether to z-score input data X. Defaults to ``True``

@@ -105,15 +105,7 @@ plot_pareto(df_all, df_best, use_parsimony=True, level=0.95)
 
 <img src="img/pareto-front.png" align="center" width="600" />
 
-*NOTE: Negative fitness values are permitted in the current implementation of `timegpy` if parsimony is used. This is because the current fitness statistic is in the domain* $[0,1]$ *meaning that complex time-average features that perform poorly are penalised.*
-
-## Computational efficiency
-
-`timegpy` can be run both in serial and parallel, with the parallel option scaling to the available computing resources. Here is an example of indicative computation time to find the correct feature `"mean(X_t+0 * X_t+1)"` and hit the stopping rule of 'no generational improvement' on an Apple MacBook Pro with a six-core Intel i7 processor for various sample sizes, where the parallel option was run with four processes, using time-series length T = 100, and a population size of 1000 features per generation:
-
-<img src="img/comp-time.png" align="center" width="600" />
-
-*Note that computation time also scales with time-series length when calculating time-average features.*
+*NOTE: Negative fitness values are permitted in the current implementation of `timegpy` if parsimony is used. This is because the current fitness statistic is in the domain* $[0,1]$ *meaning that complex time-average features that perform poorly can be penalised heavily enough to produce a negative fitness value.*
 
 ## Development
 

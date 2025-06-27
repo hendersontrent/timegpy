@@ -13,9 +13,11 @@ def generate_random_tree(max_lag_terms, prob_exponent=0.3, max_lag=5, max_expone
 
     if unary_set is None or len(unary_set) == 0:
         p_unary = 0.0
-    allowed_unary = {'sin', 'cos', 'tan'}
-    if not set(unary_set).issubset(allowed_unary):
-        raise ValueError("unary_set can only contain 'sin', 'cos', 'tan'")
+    
+    else:
+        allowed_unary = {'sin', 'cos', 'tan'}
+        if not set(unary_set).issubset(allowed_unary):
+            raise ValueError("unary_set can only contain 'sin', 'cos', 'tan'")
 
     def generate_term(force_lag0=False):
         if not force_lag0 and const_range is not None and random.random() < p_const:

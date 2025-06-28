@@ -43,16 +43,10 @@ def generate_ar1_vs_noise(N, T, phi, seed=None):
             ar1[t] = phi * ar1[t - 1] + noise[t]
         ar1_data[i] = ar1
 
-    # Generate Gaussian noise samples
+    # Generate noise samples and concatenate
 
     noise_data = np.random.normal(0, 1, (N, T))
-
-    # Concatenate
-
     X = np.vstack([ar1_data, noise_data])
-
-    # Create class labels
-
     y = np.array([1] * N + [0] * N)
     return X, y
 
@@ -62,13 +56,24 @@ X, y = generate_ar1_vs_noise(N=100, T=100, phi=0.8, seed=123)
 ### Step 2: Run tsgp with some basic settings
 
 ```python
-df_all, df_best = tsgp(X, y, pop_size=1000, n_generations=20, n_procs=4)
+df_all, df_best = tsgp(X, y, pop_size=1000, fitness_threshold=0.95, n_procs=4)
 ```
 
 `tsgp` returns two objects: 
 
 1. Data frame containing all time-average features across all generations and their fitness scores
 2. Data frame containing the best individual time-average feature and its fitness score
+
+For example, here is a sample of some rows from `df_all`:
+
+|   generation |   individual | expression                                                                                          |   program_size |    fitness |   fitness_parsimony |
+|-------------:|-------------:|:----------------------------------------------------------------------------------------------------|---------------:|-----------:|--------------------:|
+|            8 |          760 | mean((X_t+0 / (X_t+3 + (sin(X_t+1) - ((X_t+3 / cos(X_t+6)) * (((X_t+0 ^ 5) / X_t+2) / -0.1039)))))) |             18 | 0.00144987 |          -0.0913488 |
+|            2 |          849 | mean((((X_t+0 ^ 3) * (-0.6689 - (X_t+7 ^ 5))) - (X_t+5 + (sin((X_t+6 ^ 4)) * (X_t+7 ^ 5)))))        |             16 | 0.00542576 |          -0.0632842 |
+|            5 |          296 | mean((((X_t+0 ^ 5) / X_t+8) / ((tan(X_t+2) * (X_t+5 - X_t+4)) + sin(X_t+7))))                       |             14 | 0.00558475 |          -0.095035  |
+|            6 |            5 | mean((((X_t+0 ^ 5) / X_t+8) / ((tan(X_t+2) * (X_t+5 - X_t+4)) + sin(X_t+7))))                       |             14 | 0.00558475 |          -0.140775  |
+|            7 |          713 | mean((X_t+0 * X_t+1))                                                                               |              3 | 0.955555   |           0.93171   |
+|            7 |          209 | mean((X_t+0 + (X_t+4 ^ 3)))                                                                         |              4 | 0.00372465 |          -0.028069  |
 
 ### Step 3: Interpret results
 

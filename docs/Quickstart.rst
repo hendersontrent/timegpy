@@ -22,7 +22,7 @@ This tutorial will walk through basic functionality of the package using a simul
 .. code::
    
    >>> import numpy as np
-   >>> from timegpy.gp import tsgp
+   >>> from timegpy.gp import evolve
    >>> from timegpy.plots import plot_feature
 
    >>> # Simulate Gaussian noise and AR(1) data
@@ -68,13 +68,13 @@ From a statistical perspective, for this tutorial example, we would expect to se
 Doing genetic programming in timegpy
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The core function in ``timegpy`` is ``tsgp`` ('time-series genetic programming'). We can exercise high degrees of control over the algorithm's evolution by adjusting the large number of available arguments. Here is a simple call using all of the default parameters:
+The core function in ``timegpy`` is ``evolve`` ('time-series genetic programming'). We can exercise high degrees of control over the algorithm's evolution by adjusting the large number of available arguments. Here is a simple call using all of the default parameters:
 
 .. code::
    
-   >>> df_all, df_best = tsgp(X, y)
+   >>> df_all, df_best = evolve(X, y)
 
-``tsgp`` returns two objects:
+``evolve`` returns two objects:
 
 1. Data frame containing all time-average features across all generations and their fitness scores
 2. Data frame containing the best individual time-average feature and its fitness score
@@ -146,16 +146,16 @@ There is also the ability to plot the Pareto front of all features found across 
 Evaluating individual time-average feature expressions
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Outside of the core genetic programming algorithm contained in ``tsgp``, ``timegpy`` can also calculate time-average feature values for any given string representation of an expression and the input matrix:
+Outside of the core genetic programming algorithm contained in ``evolve``, ``timegpy`` can also calculate time-average feature values for any given string representation of an expression and the input matrix:
 
 .. code::
    
-   >>> feature_values = evaluate_expression("mean((X_t+0 * X_t+1))", X, z_score=True)
+   >>> feature_values = evaluate("mean((X_t+0 * X_t+1))", X, z_score=True)
 
 Multiclass problems
 ^^^^^^^^^^^^^^^^^^^
 
-Since the current fitness metric is an (adjusted) :math:`\eta^{2}` from an ANOVA (which can have multiple groups), there are no additional requirements for multiclass problems. Let's generate a three-class problem of Gaussian noise versus AR(1) process versus AR(2) process and run ``tsgp``:
+Since the current fitness metric is an (adjusted) :math:`\eta^{2}` from an ANOVA (which can have multiple groups), there are no additional requirements for multiclass problems. Let's generate a three-class problem of Gaussian noise versus AR(1) process versus AR(2) process and run ``evolve``:
 
 .. code::
    
@@ -199,7 +199,7 @@ Since the current fitness metric is an (adjusted) :math:`\eta^{2}` from an ANOVA
 
    >>> X2, y2 = generate_noise_vs_ar1_vs_ar2(N=100, T=100, phi1=0.8, phi2=0.5, phi3=0.3, seed=123)
 
-   >>> df_all2, df_best2 = tsgp(X2, y2, n_procs=4)
+   >>> df_all2, df_best2 = evolve(X2, y2, n_procs=4)
 
 We can now easily visualise the best performing feature and how each class is distributed on it:
 
@@ -215,11 +215,46 @@ We can now easily visualise the best performing feature and how each class is di
 Additional functionality
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-``timegpy`` also contains a host of other functionality, such as the function ``feature_tree`` which prints ASCII-style tree representations of time-average features to the console:
+`timegpy` can also calculate a vector of values for a specified time-average feature and an input time-series data matrix:
 
 .. code::
    
-   >>> feature_tree("mean((X_t * X_t+1^3))")
+   >>> evaluate("mean((X_t+0 * X_t+1))", X, z_score=True)
+
+As well as calculate time-average feature values for any number of expressions over a time-series data matrix and create a time series :math:`\times` feature matrix as a data frame ready for machine learning:
+
+.. code::
+   
+   >>> expressions = [
+   >>>  "mean((X_t+0 * X_t+1))",
+   >>>  "mean((sin(X_t+0) * X_t+2))",
+   >>>  "mean((X_t+0 ^ 2) / (X_t+3))"
+   >>> ]
+   >>> 
+   >>> df_features = create(expressions, X)
+
+.. list-table::
+   :widths: 25 25
+   :header-rows: 1
+
+   * - mean((X_t+0 * X_t+1))
+     - mean((sin(X_t+0) * X_t+2))
+   * - 0.832399
+     - 0.451784
+   * - 0.739484
+     - 0.308422
+   * - 0.832919
+     - 0.0.444912
+   * - 0.716769
+     - 0.352894
+   * - 0.796774 
+     - 0.374919
+
+``timegpy`` also contains a host of other functionality, such as the function ``represent`` which prints ASCII-style tree representations of time-average features to the console:
+
+.. code::
+   
+   >>> represent("mean((X_t * X_t+1^3))")
    >>>
    >>> └── *
    >>>  ├── X_t

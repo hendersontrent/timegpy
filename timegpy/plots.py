@@ -2,7 +2,7 @@ import numpy as np
 import pandas
 import matplotlib.pyplot as plt
 from matplotlib.ticker import MaxNLocator
-from .evaluate_expression import evaluate_expression
+from .evaluate_expression import evaluate
 
 def plot_hist(expr, X, y, bins=10, z_score=True):
     """
@@ -21,7 +21,7 @@ def plot_hist(expr, X, y, bins=10, z_score=True):
 
     #-------- Prepare data --------
 
-    feature_values = evaluate_expression(expr, X, z_score=z_score)
+    feature_values = evaluate(expr, X, z_score=z_score)
 
     # Get class labels
 

@@ -1,6 +1,6 @@
 import numpy as np
-from timegpy.gp import tsgp
-from timegpy.evaluate_expression import evaluate_expression
+from timegpy.gp import evolve
+from timegpy.evaluate_expression import evaluate
 
 #----------------- Test 1: Overall function works ------------------
 
@@ -35,7 +35,7 @@ X, y = generate_ar1_vs_noise(N=100, T=100, phi=0.8, seed=123)
 
 # Run main function
 
-df_all, df_best = tsgp(X, y, n_procs=5)
+df_all, df_best = evolve(X, y, n_procs=5)
 
 #----------------- Test 2: Fitness calculation ------------------
 
@@ -68,7 +68,7 @@ result1 = np.nanmean(values)
 
 # Implement timegpy's feature calculation
 
-result2 = evaluate_expression("mean(X_t+0 * X_t+1)", x, z_score=False)
+result2 = evaluate("mean(X_t+0 * X_t+1)", x, z_score=False)
 
 # Test if the two are the same
 

@@ -230,7 +230,7 @@ As well as calculate time-average feature values for any number of expressions o
    >>>  "mean((sin(X_t+0) * X_t+2))"
    >>> ]
    >>> 
-   >>> df_features = create(expressions, X)
+   >>> df_features = create(expressions, X, z_score=True)
 
 .. list-table::
    :widths: 25 25

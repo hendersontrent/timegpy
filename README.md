@@ -113,8 +113,7 @@ As well as calculate time-average feature values for any number of expressions o
 ```python
 expressions = [
     "mean((X_t+0 * X_t+1))",
-    "mean((sin(X_t+0) * X_t+2))",
-    "mean((X_t+0 ^ 2) / (X_t+3))"
+    "mean((sin(X_t+0) * X_t+2))"
 ]
 
 df_features = create(expressions, X)

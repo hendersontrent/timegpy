@@ -14,7 +14,7 @@ from .checks import ensure_has_X_t
 from .crossover import crossover
 from .evaluate_program_wrapper import evaluate_program
 
-def tsgp(
+def evolve(
     X,
     y,
     pop_size=1000,

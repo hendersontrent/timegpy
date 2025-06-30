@@ -2,7 +2,7 @@ import numpy as np
 import re
 from scipy.stats import zscore
 
-def evaluate_expression(expr, X, z_score=True):
+def evaluate(expr, X, z_score=True):
     if z_score:
         X = zscore(X, axis=1, nan_policy='omit')
 

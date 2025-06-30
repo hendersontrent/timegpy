@@ -82,7 +82,7 @@ def parse_expression(expr: str) -> Node:
     parser = Parser(tokens)
     return parser.parse()
 
-def feature_tree(expr: str):
+def represent(expr: str):
     def _print_tree(node, indent="", is_left=True):
         if node is None:
             return

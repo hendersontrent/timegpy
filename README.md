@@ -116,7 +116,7 @@ expressions = [
     "mean((sin(X_t+0) * X_t+2))"
 ]
 
-df_features = create(expressions, X)
+df_features = create(expressions, X, z_score=True)
 ```
 
 |    |   mean((X_t+0 * X_t+1)) |   mean((sin(X_t+0) * X_t+2)) |

@@ -101,7 +101,7 @@
 <p>Time-average features—quantities of the functional form <img class="math" src="_images/math/1c853a54179bd623606e50a36ed7d4f4dee1c5c9.png" alt="$\langle f(x_1, x_2, \dots, x_n)_t \rangle$"/> such as <img class="math" src="_images/math/842d322e2dc9409b9ebb998ed18bf8085c75fc21.png" alt="$\langle x_{t}x_{t+1} \rangle$"/>—have shown utility in solving time-series problems across the sciences but have yet to be systematically applied to time-series classification problems. Time-average features are highly interpretable, which means they can be used to develop an intuitive understanding of why two classes might be well distinguished from one another by their temporal dynamics.</p>
 <p>This tutorial will walk through basic functionality of the package using a simulated example. We will first generate some data, where we have <img class="math" src="_images/math/19f1a355fed06cb66418ced049e1b95de222984a.png" alt="n = 100"/> samples from an <a class="reference external" href="https://en.wikipedia.org/wiki/Autoregressive_model">autoregressive process of lag 1</a> with an autoregressive coefficient of <img class="math" src="_images/math/b68a47d3eeae073bfc12b8461327be30dcd5cd7d.png" alt="\phi = 0.8"/>, and <img class="math" src="_images/math/19f1a355fed06cb66418ced049e1b95de222984a.png" alt="n = 100"/> samples drawn from simple Gaussian noise (with mean 0 and standard deviation 1), where every time series is <img class="math" src="_images/math/0c31b425c7cfb5d0149bbd0404d0f22a9628ed19.png" alt="T = 100"/> long:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
-<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">timegpy.gp</span><span class="w"> </span><span class="kn">import</span> <span class="n">tsgp</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">timegpy.gp</span><span class="w"> </span><span class="kn">import</span> <span class="n">evolve</span>
 <span class="gp">&gt;&gt;&gt; </span><span class="kn">from</span><span class="w"> </span><span class="nn">timegpy.plots</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_feature</span>
 
 <span class="gp">&gt;&gt;&gt; </span><span class="c1"># Simulate Gaussian noise and AR(1) data</span>
@@ -145,11 +145,11 @@
 </section>
 <section id="doing-genetic-programming-in-timegpy">
 <h3>Doing genetic programming in timegpy<a class="headerlink" href="#doing-genetic-programming-in-timegpy" title="Permalink to this heading"></a></h3>
-<p>The core function in <code class="docutils literal notranslate"><span class="pre">timegpy</span></code> is <code class="docutils literal notranslate"><span class="pre">tsgp</span></code> (‘time-series genetic programming’). We can exercise high degrees of control over the algorithm’s evolution by adjusting the large number of available arguments. Here is a simple call using all of the default parameters:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df_all</span><span class="p">,</span> <span class="n">df_best</span> <span class="o">=</span> <span class="n">tsgp</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
+<p>The core function in <code class="docutils literal notranslate"><span class="pre">timegpy</span></code> is <code class="docutils literal notranslate"><span class="pre">evolve</span></code> (‘time-series genetic programming’). We can exercise high degrees of control over the algorithm’s evolution by adjusting the large number of available arguments. Here is a simple call using all of the default parameters:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">df_all</span><span class="p">,</span> <span class="n">df_best</span> <span class="o">=</span> <span class="n">evolve</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
 </pre></div>
 </div>
-<p><code class="docutils literal notranslate"><span class="pre">tsgp</span></code> returns two objects:</p>
+<p><code class="docutils literal notranslate"><span class="pre">evolve</span></code> returns two objects:</p>
 <ol class="arabic simple">
 <li><p>Data frame containing all time-average features across all generations and their fitness scores</p></li>
 <li><p>Data frame containing the best individual time-average feature and its fitness score</p></li>
@@ -207,14 +207,14 @@
 </section>
 <section id="evaluating-individual-time-average-feature-expressions">
 <h3>Evaluating individual time-average feature expressions<a class="headerlink" href="#evaluating-individual-time-average-feature-expressions" title="Permalink to this heading"></a></h3>
-<p>Outside of the core genetic programming algorithm contained in <code class="docutils literal notranslate"><span class="pre">tsgp</span></code>, <code class="docutils literal notranslate"><span class="pre">timegpy</span></code> can also calculate time-average feature values for any given string representation of an expression and the input matrix:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">feature_values</span> <span class="o">=</span> <span class="n">evaluate_expression</span><span class="p">(</span><span class="s2">&quot;mean((X_t+0 * X_t+1))&quot;</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">z_score</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<p>Outside of the core genetic programming algorithm contained in <code class="docutils literal notranslate"><span class="pre">evolve</span></code>, <code class="docutils literal notranslate"><span class="pre">timegpy</span></code> can also calculate time-average feature values for any given string representation of an expression and the input matrix:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">feature_values</span> <span class="o">=</span> <span class="n">evaluate</span><span class="p">(</span><span class="s2">&quot;mean((X_t+0 * X_t+1))&quot;</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">z_score</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 </pre></div>
 </div>
 </section>
 <section id="multiclass-problems">
 <h3>Multiclass problems<a class="headerlink" href="#multiclass-problems" title="Permalink to this heading"></a></h3>
-<p>Since the current fitness metric is an (adjusted) <img class="math" src="_images/math/fe13c6ded683cac96dc251fdcaaa3180a5ae2a98.png" alt="\eta^{2}"/> from an ANOVA (which can have multiple groups), there are no additional requirements for multiclass problems. Let’s generate a three-class problem of Gaussian noise versus AR(1) process versus AR(2) process and run <code class="docutils literal notranslate"><span class="pre">tsgp</span></code>:</p>
+<p>Since the current fitness metric is an (adjusted) <img class="math" src="_images/math/fe13c6ded683cac96dc251fdcaaa3180a5ae2a98.png" alt="\eta^{2}"/> from an ANOVA (which can have multiple groups), there are no additional requirements for multiclass problems. Let’s generate a three-class problem of Gaussian noise versus AR(1) process versus AR(2) process and run <code class="docutils literal notranslate"><span class="pre">evolve</span></code>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="k">def</span><span class="w"> </span><span class="nf">generate_noise_vs_ar1_vs_ar2</span><span class="p">(</span><span class="n">N</span><span class="p">,</span> <span class="n">T</span><span class="p">,</span> <span class="n">phi1</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">phi2</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">phi3</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="gp">&gt;&gt;&gt; </span> <span class="k">if</span> <span class="n">seed</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
 <span class="gp">&gt;&gt;&gt; </span>     <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">seed</span><span class="p">(</span><span class="n">seed</span><span class="p">)</span>
@@ -255,7 +255,7 @@
 
 <span class="gp">&gt;&gt;&gt; </span><span class="n">X2</span><span class="p">,</span> <span class="n">y2</span> <span class="o">=</span> <span class="n">generate_noise_vs_ar1_vs_ar2</span><span class="p">(</span><span class="n">N</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">T</span><span class="o">=</span><span class="mi">100</span><span class="p">,</span> <span class="n">phi1</span><span class="o">=</span><span class="mf">0.8</span><span class="p">,</span> <span class="n">phi2</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span> <span class="n">phi3</span><span class="o">=</span><span class="mf">0.3</span><span class="p">,</span> <span class="n">seed</span><span class="o">=</span><span class="mi">123</span><span class="p">)</span>
 
-<span class="gp">&gt;&gt;&gt; </span><span class="n">df_all2</span><span class="p">,</span> <span class="n">df_best2</span> <span class="o">=</span> <span class="n">tsgp</span><span class="p">(</span><span class="n">X2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">n_procs</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df_all2</span><span class="p">,</span> <span class="n">df_best2</span> <span class="o">=</span> <span class="n">evolve</span><span class="p">(</span><span class="n">X2</span><span class="p">,</span> <span class="n">y2</span><span class="p">,</span> <span class="n">n_procs</span><span class="o">=</span><span class="mi">4</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>We can now easily visualise the best performing feature and how each class is distributed on it:</p>
@@ -267,8 +267,49 @@
 </section>
 <section id="additional-functionality">
 <h3>Additional functionality<a class="headerlink" href="#additional-functionality" title="Permalink to this heading"></a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">timegpy</span></code> also contains a host of other functionality, such as the function <code class="docutils literal notranslate"><span class="pre">feature_tree</span></code> which prints ASCII-style tree representations of time-average features to the console:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; feature_tree(&quot;mean((X_t * X_t+1^3))&quot;)
+<p><cite>timegpy</cite> can also calculate a vector of values for a specified time-average feature and an input time-series data matrix:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">evaluate</span><span class="p">(</span><span class="s2">&quot;mean((X_t+0 * X_t+1))&quot;</span><span class="p">,</span> <span class="n">X</span><span class="p">,</span> <span class="n">z_score</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>As well as calculate time-average feature values for any number of expressions over a time-series data matrix and create a time series <img class="math" src="_images/math/8ef1f282527041d7d5c4a46dd2c60a02a7a7c00b.png" alt="\times"/> feature matrix as a data frame ready for machine learning:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">expressions</span> <span class="o">=</span> <span class="p">[</span>
+<span class="gp">&gt;&gt;&gt; </span> <span class="s2">&quot;mean((X_t+0 * X_t+1))&quot;</span><span class="p">,</span>
+<span class="gp">&gt;&gt;&gt; </span> <span class="s2">&quot;mean((sin(X_t+0) * X_t+2))&quot;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="p">]</span>
+<span class="gp">&gt;&gt;&gt;</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">df_features</span> <span class="o">=</span> <span class="n">create</span><span class="p">(</span><span class="n">expressions</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span>
+</pre></div>
+</div>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>mean((X_t+0 * X_t+1))</p></th>
+<th class="head"><p>mean((sin(X_t+0) * X_t+2))</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>0.832399</p></td>
+<td><p>0.451784</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.739484</p></td>
+<td><p>0.308422</p></td>
+</tr>
+<tr class="row-even"><td><p>0.832919</p></td>
+<td><p>0.0.444912</p></td>
+</tr>
+<tr class="row-odd"><td><p>0.716769</p></td>
+<td><p>0.352894</p></td>
+</tr>
+<tr class="row-even"><td><p>0.796774</p></td>
+<td><p>0.374919</p></td>
+</tr>
+</tbody>
+</table>
+<p><code class="docutils literal notranslate"><span class="pre">timegpy</span></code> also contains a host of other functionality, such as the function <code class="docutils literal notranslate"><span class="pre">represent</span></code> which prints ASCII-style tree representations of time-average features to the console:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&gt;&gt;&gt; represent(&quot;mean((X_t * X_t+1^3))&quot;)
 &gt;&gt;&gt;
 &gt;&gt;&gt; └── *
 &gt;&gt;&gt;  ├── X_t

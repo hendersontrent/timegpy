@@ -104,8 +104,7 @@ Notice that the noise time series are distributed around 0 (i.e., no autocorrela
 ```python
 evaluate("mean((X_t+0 * X_t+1))", X, z_score=True)
 
-[3.35459726e+00  1.52937553e+00  2.84077634e+00  1.54520977e+00
- 2.29404363e+00]
+[3.35459726e+00 1.52937553e+00 2.84077634e+00 1.54520977e+00 2.29404363e+00]
 ```
 
 As well as calculate time-average feature values for any number of expressions over a time-series data matrix and create a time series $\times$ feature matrix as a data frame ready for machine learning:
